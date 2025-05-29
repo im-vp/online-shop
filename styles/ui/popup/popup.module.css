@@ -1,0 +1,67 @@
+.overlay {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: fixed;
+  padding: 15px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 10;
+}
+.popup {
+  position: relative;
+  width: 100%;
+}
+.container {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: var(--border-radius);
+}
+.content {
+  max-height: calc(90dvh - 15px);
+  overflow-y: auto;
+}
+.close {
+  position: absolute;
+  top: -8px;
+  right: -11px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  align-self: flex-start;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  padding: 2px;
+  background-color: #fff;
+  border-radius: 50%;
+  transform: translateY(-100%);
+  z-index: 1;
+}
+.close::after {
+  width: 100%;
+  height: 100%;
+  content: '';
+  background-color: var(--color-black);
+  -webkit-mask: url(/image/assets/cancel-icon.svg) no-repeat 50%/100%;
+  mask: url(/image/assets/cancel-icon.svg) no-repeat 50%/100%;
+  transition: transform 0.2s ease-in-out;
+}
+.close:hover::after {
+  transform: rotate(90deg);
+}
+@media (max-width: 640px) {
+  .popup {
+    position: relative;
+  }
+  .close {
+    top: 0;
+    right: 0;
+    width: 32px;
+    height: 32px;
+    transform: translateY(calc((-100% - 5px)));
+  }
+}

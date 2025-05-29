@@ -1,0 +1,8 @@
+.error-page__image {
+  height: 450px;
+  text-align: center;
+}
+.error-page__text {
+  margin: 15px 0;
+  text-align: center;
+}

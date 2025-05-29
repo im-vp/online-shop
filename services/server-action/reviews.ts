@@ -1,0 +1,40 @@
+'use server';
+
+import ProductModel from '@/models/productModel';
+import ReviewsModel from '@/models/reviewsModel';
+import { IProduct } from '@/types/types';
+
+export const getReviewsByProductId = async (productId: string) => {
+  const reviews = await ReviewsModel.find({ product: productId })
+    .populate('user')
+    .sort({ createdAt: -1 });
+
+  return reviews.length ? reviews : [];
+};
+
+export const updateRating = async (productId: string, userRating: number) => {
+  const product: IProduct | null = await ProductModel.findOne({ _id: productId });
+
+  if (!product) return false;
+
+  if (product.rating.value === 0 && product.rating.reviewCount === 0) {
+    await ProductModel.findOneAndUpdate(
+      { _id: productId },
+      {
+        'rating.value': userRating,
+        'rating.reviewCount': 1,
+      },
+    );
+  } else {
+    const oldRating = product.rating.value;
+    const reviewCount = product.rating.reviewCount;
+    const newValue = userRating;
+
+    const newRating = (oldRating * reviewCount + newValue) / (reviewCount + 1);
+
+    await ProductModel.findOneAndUpdate(
+      { _id: productId },
+      { 'rating.value': newRating.toFixed(1), 'rating.reviewCount': reviewCount + 1 },
+    );
+  }
+};

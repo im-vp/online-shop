@@ -1,0 +1,38 @@
+.list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  column-gap: 5px;
+  padding: 5px 10px;
+  border: 1px solid var(--color-dark-gray);
+  border-radius: var(--border-radius);
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+.button .icon {
+  display: flex;
+  --color: var(--color-dark-gray);
+  --color-hover: var(--color-dark-gray);
+  width: 20px;
+  height: 20px;
+}
+.button .icon::before {
+  mask: url(/image/assets/cancel-icon.svg) no-repeat 50%/100%;
+}
+.button:hover {
+  background-color: var(--color-gray);
+  border-color: var(--color-gray);
+}
+.button.reset:hover {
+  color: #ffffff;
+  background-color: var(--color-light-green);
+  border-color: var(--color-light-green);
+}

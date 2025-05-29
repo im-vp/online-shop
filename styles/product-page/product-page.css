@@ -1,0 +1,35 @@
+.product-page__top {
+  display: flex;
+  gap: 15px;
+}
+.product-page__left,
+.product-page__right {
+  width: 50%;
+}
+.product-page__preview {
+  padding: 15px;
+}
+.product-page__title {
+  margin-bottom: 15px;
+  font-size: 1.3em;
+  font-weight: 500;
+}
+.product-page__rating {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+.product-page__code {
+  color: var(--color-dark-gray);
+}
+.product-page__description {
+  margin-bottom: 25px;
+}
+.product-page__price {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 1.5em;
+  color: var(--color-green);
+}

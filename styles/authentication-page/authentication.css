@@ -1,0 +1,109 @@
+.authentication-popup__container {
+  padding: 0 !important;
+}
+.authentication {
+  position: relative;
+  padding: 25px 15px;
+  color: #fff;
+  z-index: 1;
+}
+.registration::after,
+.authorization::after {
+  position: absolute;
+  display: block;
+  content: '';
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: -1;
+  border-radius: var(--border-radius);
+}
+.registration::after {
+  opacity: 0;
+  background: linear-gradient(225deg, #020344 0%, #28b8d5 100%);
+  animation: show-bg 0.5s ease forwards;
+}
+.authorization::after {
+  opacity: 0;
+  background: linear-gradient(45deg, #020344 0%, #28b8d5 100%);
+  animation: show-bg 0.5s ease forwards;
+}
+@keyframes show-bg {
+  0% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+.auth-container__title {
+  margin-bottom: 25px;
+  font-size: 1.5em;
+  text-align: center;
+  text-transform: uppercase;
+}
+.auth-from {
+  display: flex;
+  flex-direction: column;
+  row-gap: 20px;
+  max-width: 450px;
+  margin: 0 auto;
+  padding: 0 15px;
+}
+.auth-from .row {
+  position: relative;
+}
+.auth-from__input-error {
+  position: absolute;
+  left: 2px;
+  top: calc(100% + 2px);
+  font-size: 0.62em;
+  color: var(--color-light-yellow);
+}
+.auth-container input {
+  width: 100%;
+  padding: 10px 12px;
+  color: var(--color-yellow);
+  border: 1px solid var(--color-dark-gray);
+  border-radius: var(--border-radius);
+  background-color: var(--color-black);
+}
+.auth-container input:focus {
+  border-color: var(--color-yellow);
+}
+.auth-container input::placeholder {
+  font-style: italic;
+  color: var(--color-dark-gray);
+}
+.auth-from__message {
+  font-size: 0.9em;
+  color: var(--color-yellow);
+  text-align: center;
+}
+.row-button {
+  text-align: center;
+}
+.auth-from__submit {
+  display: inline-flex;
+  padding: 10px 15px;
+  color: var(--color-yellow);
+  background-color: var(--color-black);
+  border: 1px solid var(--color-yellow);
+  border-radius: var(--border-radius);
+}
+.auth-from__submit:hover {
+  color: var(--color-light-yellow);
+  border-color: var(--color-light-yellow);
+}
+.registration__switch {
+  margin-top: 25px;
+  font-size: 0.9em;
+  text-align: center;
+}
+.registration__switch-btn {
+  text-decoration: underline;
+}
+.registration__switch-btn:hover {
+  text-decoration: none;
+}

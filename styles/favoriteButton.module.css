@@ -1,0 +1,17 @@
+.product__favorites {
+    --color: var(--color-dark-gray);
+    --color-hover: #ff5b5b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin: 10px 0;
+  }
+  .product__favorites::before {
+    -webkit-mask: url(/image/assets/heart-icon.svg) no-repeat 50% / contain;
+    mask: url(/image/assets/heart-icon.svg) no-repeat 50% / contain;
+  }
+  .product__favorites_active {
+    --color: #ff0000;
+  }

@@ -1,0 +1,31 @@
+.container {
+  max-width: 400px;
+}
+.slider {
+  --arrow-color: var(--color-green);
+  --arrow-color-hover: var(--color-light-green);
+}
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 350px;
+  margin-bottom: 95px;
+}
+.dots {
+  column-gap: 10px;
+}
+.dots__btn {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 80px;
+  height: 80px;
+  padding: 5px;
+  border: 1px solid var(--color-green);
+  border-radius: var(--border-radius);
+  background-color: #fff;
+}
+.dots__btn:hover {
+  border-color: var(--color-light-green);
+}

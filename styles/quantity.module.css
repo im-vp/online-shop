@@ -1,0 +1,42 @@
+.container {
+  display: flex;
+  align-items: center;
+  column-gap: 8px;
+}
+.input {
+  width: 50px;
+  height: 30px;
+  padding: 2px;
+  border: 1px solid var(--color-green);
+  border-radius: var(--border-radius);
+  text-align: center;
+}
+.button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  padding: 5px;
+  background-color: var(--color-green);
+  border-radius: var(--border-radius);
+  transition: opacity 0.2s ease-in-out;
+}
+.button:hover {
+  opacity: 0.8;
+}
+.button::after {
+  display: block;
+  content: '';
+  height: 100%;
+  width: 100%;
+  background-color: #fff;
+}
+.minus::after {
+  -webkit-mask: url(/image/assets/minus-icon.svg) 50% / 100% no-repeat;
+  mask: url(/image/assets/minus-icon.svg) 50% / 100% no-repeat;
+}
+.plus::after {
+  -webkit-mask: url(/image/assets/plus-icon.svg) 50% / 100% no-repeat;
+  mask: url(/image/assets/plus-icon.svg) 50% / 100% no-repeat;
+}

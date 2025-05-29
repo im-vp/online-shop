@@ -1,0 +1,6 @@
+.sort {
+  padding: 5px;
+  border: 1px solid var(--color-dark-gray);
+  border-radius: var(--border-radius);
+  cursor: pointer;
+}

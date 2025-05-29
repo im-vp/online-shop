@@ -1,0 +1,136 @@
+'use server';
+
+import { cookies } from 'next/headers';
+
+import { connectMongoDB } from '@/lib/mongodb';
+import { getCartTotalPrice, getCartTotalQuantity, isTokenValid, parseJwt } from '@/lib/utils/utils';
+
+import ProductModel from '@/models/productModel';
+import RefreshTokenModel from '@/models/refreshTokenModel';
+import UserModel from '@/models/userModel';
+import { CartCookieValues, ICartProduct } from '@/types/types';
+import { IUser } from '@/types/user-types';
+
+export const getTokensFormCookie = () => {
+  const cookieStore = cookies();
+  const accessToken = cookieStore.get('accessToken');
+  const refreshToken = cookieStore.get('refreshToken');
+
+  return { accessToken, refreshToken };
+};
+
+export const loginCheck = async () => {
+  const accessToken = cookies().get('accessToken');
+
+  return accessToken && (await isTokenValid(accessToken.value)) ? true : false;
+};
+
+export const isUserByIdToken = async (token: string) => {
+  const id = parseJwt(token).id;
+
+  if (!id) return false;
+
+  const user: IUser | null = await UserModel.findOne({
+    _id: id,
+  });
+
+  return user ? true : false;
+};
+
+export const findRefreshTokenByUserId = async (token: string) => {
+  const userId = parseJwt(token).id;
+
+  if (!userId) return false;
+
+  const refreshToken = await RefreshTokenModel.findOne({
+    user: userId,
+  });
+
+  return refreshToken || false;
+};
+
+export const updateRefreshToken = async (oldToken: string, newToken: string) => {
+  if (!oldToken || !newToken) return;
+
+  await RefreshTokenModel.updateOne(
+    {
+      token: oldToken,
+    },
+    {
+      token: newToken,
+    },
+  );
+};
+
+export const getUserById = async (id: string): Promise<IUser | null> => {
+  if (!id) return null;
+
+  const user = await UserModel.findOne({ _id: id }).select('-password');
+
+  return user ? user : null;
+};
+
+export const getUserIdByTokenFromCookie = async () => {
+  const accessToken = cookies().get('accessToken');
+
+  if (accessToken && (await isTokenValid(accessToken.value))) {
+    const userId = parseJwt(accessToken.value).id as string;
+
+    return userId;
+  }
+};
+
+export const getUserProfile = async () => {
+  const id = await getUserIdByTokenFromCookie();
+
+  if (!id) return null;
+
+  const user = await getUserById(id);
+
+  if (!user) return null;
+
+  return user;
+};
+
+export const getCartProducts = async () => {
+  const cart = cookies().get('cart');
+
+  if (!cart) return false;
+
+  try {
+    connectMongoDB();
+
+    const cartParse: CartCookieValues[] = JSON.parse(cart.value);
+
+    const products = await ProductModel.find({
+      _id: { $in: cartParse.map((item: CartCookieValues) => item.id) },
+    }).lean();
+
+    const productsCart: ICartProduct[] = products.map((product) => ({
+      ...product,
+      quantity: Number(cartParse.find((item) => item.id === product._id.toString())?.quantity) || 1,
+      totalPrice:
+        product.price *
+        (Number(cartParse.find((item) => item.id === product._id.toString())?.quantity) || 1),
+    }));
+
+    return JSON.parse(
+      JSON.stringify({
+        products: productsCart,
+        totalQuantity: getCartTotalQuantity(productsCart),
+        totalSum: getCartTotalPrice(productsCart),
+      }),
+    );
+  } catch (error) {
+    return false;
+  }
+};
+export const getCartQuantity = async () => {
+  const cart = cookies().get('cart');
+
+  if (!cart) return 0;
+
+  const cartParse: CartCookieValues[] = JSON.parse(cart.value);
+
+  return cartParse.reduce((total, product) => total + Number(product.quantity), 0);
+};

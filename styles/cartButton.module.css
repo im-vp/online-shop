@@ -1,0 +1,23 @@
+.btn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px;
+  font-size: 1.2em;
+  color: #fff;
+  font-weight: 500;
+  background-color: var(--color-green);
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease-in-out;
+}
+.btn::after {
+  content: '';
+  width: 35px;
+  height: 30px;
+  background-color: #fff;
+  -webkit-mask: url(/image/assets/cart-icon.svg) 50% / contain no-repeat;
+  mask: url(/image/assets/cart-icon.svg) 50% / contain no-repeat;
+}
+.btn:hover {
+  background-color: var(--color-light-green);
+}

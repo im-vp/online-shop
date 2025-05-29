@@ -1,0 +1,9 @@
+
+.not-found-page__image {
+  height: 450px;
+  text-align: center;
+}
+.not-found-page__text {
+  margin: 15px 0;
+  text-align: center;
+}

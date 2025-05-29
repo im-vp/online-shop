@@ -1,0 +1,21 @@
+.reviews-item {
+  padding: 15px 10px;
+  border: 1px solid var(--color-gray);
+  border-radius: var(--border-radius);
+}
+.reviews-item__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.reviews-item__name {
+  font-weight: 500;
+}
+.reviews-item__date {
+  color: var(--color-dark-gray);
+}
+.reviews-item__rating {
+  margin-bottom: 10px;
+}

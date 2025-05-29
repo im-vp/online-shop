@@ -1,0 +1,21 @@
+.authentication-page {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--color-black);
+}
+.authentication-container {
+  margin: auto;
+  width: 100%;
+}
+.authentication-page__header {
+  display: flex;
+  justify-content: center;
+  padding: 15px 0;
+  box-shadow: 0 0 3px #fff;
+}
+.authentication-page .authentication {
+  max-width: 650px;
+  margin: auto;
+  border-radius: var(--border-radius);
+  border: 1px solid #fff;
+}

@@ -1,0 +1,11 @@
+.order-result-page__text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 15px;
+  margin: 45px 0;
+}
+.order-result-page__order-number span {
+  font-weight: 500;
+  font-size: 1.5em;
+}

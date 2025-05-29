@@ -1,0 +1,38 @@
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  row-gap: 15px;
+}
+.favorites-item {
+  display: flex;
+  column-gap: 10px;
+  padding: 10px 0;
+}
+.favorites-item:not(:last-child) {
+  border-bottom: 1px solid var(--color-gray);
+}
+.favorites-item__image {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 120px;
+}
+.favorites-item__name {
+  text-decoration: underline;
+}
+.favorites-item__name:hover {
+  text-decoration: none;
+}
+.favorites-item__price {
+  display: block;
+  margin: 15px 0;
+  font-size: 1.35em;
+}
+.favorites-item__buttons {
+  display: flex;
+  gap: 15px;
+}
+.favorites-item__btn-cart {
+  font-size: 0.95em;
+}

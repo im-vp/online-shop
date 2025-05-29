@@ -1,0 +1,32 @@
+.rating {
+  display: flex;
+  align-items: flex-end;
+  column-gap: 5px;
+}
+.container {
+  display: flex;
+  column-gap: 2px;
+}
+.button {
+  display: flex;
+  --color: #a3a3a3;
+  --color-hover: #c8640d;
+  width: 20px;
+  height: 20px;
+}
+.button::before {
+  mask: url(/image/assets/star-icon.svg) no-repeat 50% / contain;
+}
+.readonly .button {
+  --color-hover: #a3a3a3;
+  cursor: default;
+}
+.readonly .button.active {
+  --color-hover: #ff9306;
+}
+.active {
+  --color: #ff9306;
+}
+.counts {
+  color: #a3a3a3;
+}

@@ -1,0 +1,51 @@
+.user-profile__form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+.user-profile .row {
+  flex: 1 calc(50% - 15px);
+  min-width: 250px;
+}
+.user-profile .profile-input {
+  padding: 5px 10px;
+  width: 100%;
+  border: 1px solid transparent;
+  border-radius: var(--border-radius);
+}
+.user-profile .profile-input:not([disabled]) {
+  border-color: var(--color-dark-gray);
+}
+.user-profile__button-wrap {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  width: 100%;
+  padding-top: 15px;
+  border-top: 1px solid var(--color-gray);
+}
+.user-profile__button {
+  padding: 10px 15px;
+  border-radius: var(--border-radius);
+  transition: background-color 0.2s ease-in-out;
+}
+.user-profile__button-edit {
+  background-color: var(--color-yellow);
+}
+.user-profile__button-edit:hover {
+  background-color: var(--color-light-yellow);
+}
+.user-profile__button-save {
+  color: #fff;
+  background-color: var(--color-green);
+}
+.user-profile__button-save:hover {
+  background-color: var(--color-light-green);
+}
+.user-profile__button-cancel {
+  color: #fff;
+  background-color: #ff5656;
+}
+.user-profile__button-cancel:hover {
+  background-color: #fc3030;
+}
