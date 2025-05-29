@@ -29,6 +29,7 @@ export const getProducts = async (
 
     return data;
   } catch (error) {
+    //@ts-ignore
     return { success: false, data: {}, message: errorHandler(error) };
   }
 };
@@ -41,6 +42,7 @@ export const getProduct = async (product: string): Promise<IApiResponse<IProduct
 
     return data;
   } catch (error) {
+    //@ts-ignore
     return { success: false, data: {}, message: errorHandler(error) };
   }
 };

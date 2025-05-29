@@ -2,6 +2,8 @@ import Favorites from '@/components/pages/Cabinet/Favorites';
 
 import { getUserFavoritesProducts } from '@/services/server-action/favorites';
 
+export const dynamic = 'force-dynamic';
+
 const FavoritesPage = async () => {
   const favoritesProducts = await getUserFavoritesProducts();
 

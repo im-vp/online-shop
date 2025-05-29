@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    const products: IProduct[] | null = await ProductModel.find(filter)
+    const products: IProduct[] | null = await ProductModel.find(filter) //@ts-ignore
       .sort({ [sortObject[sort].field]: sortObject[sort].order })
       .populate('category');
 

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-import { title } from 'process';
-
 import { connectMongoDB } from '@/lib/mongodb';
 
 import { corsHeaders } from '@/constants/corsHeaders';
@@ -22,9 +20,10 @@ export async function GET(request: NextRequest) {
     if (!product) {
       return NextResponse.json({ product: [{ text: 'Товар не найден' }] }, corsHeaders);
     }
+    const { _id, ...rest } = product;
     const newProduct = {
-      id: product._id,
-      ...product,
+      id: _id,
+      ...rest,
       images: {
         id: product._id,
         list: product.images.map((image, i) => ({
@@ -33,7 +32,6 @@ export async function GET(request: NextRequest) {
         })),
       },
     };
-    delete newProduct._id;
 
     return NextResponse.json(
       {

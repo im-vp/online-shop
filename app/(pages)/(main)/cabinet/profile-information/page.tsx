@@ -2,11 +2,12 @@ import UserProfile from '@/components/pages/Cabinet/Profile';
 
 import { getUserProfile } from '@/services/server-action/actions';
 
+export const dynamic = 'force-dynamic';
+
 const Page = async () => {
   const data = await getUserProfile();
 
   const parseUserProfile = data ? JSON.parse(JSON.stringify(data)) : [];
-  console.log(parseUserProfile);
 
   return (
     <>

@@ -9,9 +9,8 @@ import { getCartQuantity, loginCheck } from '@/services/server-action/actions';
 import { getUserFavoritesIds } from '@/services/server-action/favorites';
 
 const Header = async () => {
-  const {
-    data: { categories },
-  } = await getCategories();
+  const { data } = await getCategories();
+  const categories = data?.categories || [];
   const isAuth = await loginCheck();
   const isFavorites = await getUserFavoritesIds();
   const cartQuantity = await getCartQuantity();

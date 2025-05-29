@@ -10,6 +10,7 @@ export const getCategories = async (): Promise<IApiResponse<ICategoriesResponse>
 
     return data;
   } catch (error) {
+    //@ts-ignore
     return { success: false, data: null, message: errorHandler(error) };
   }
 };
