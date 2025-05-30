@@ -1,9 +1,4 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  experimental: {
-    esmExternals: 'loose',
-    serverComponentsExternalPackages: ['mongoose'],
-  },
-};
+const nextConfig = {};
 
 export default nextConfig;
