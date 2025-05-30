@@ -12,7 +12,10 @@ export async function GET(request: NextRequest) {
   try {
     const product: IProduct | null = await ProductModel.findOne({
       slug: productSlug,
-    }).populate('category');
+    }).populate({
+      path: 'category',
+      model: 'Categories',
+    });
 
     if (!product) {
       return NextResponse.json({ success: false, message: 'Товар не найден' }, { status: 404 });
