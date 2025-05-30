@@ -1,10 +1,13 @@
 'use server';
 
+import { connectMongoDB } from '@/lib/mongodb';
+
 import ProductModel from '@/models/productModel';
 import ReviewsModel from '@/models/reviewsModel';
 import { IProduct } from '@/types/types';
 
 export const getReviewsByProductId = async (productId: string) => {
+  await connectMongoDB();
   const reviews = await ReviewsModel.find({ product: productId })
     .populate('user')
     .sort({ createdAt: -1 });
@@ -13,6 +16,8 @@ export const getReviewsByProductId = async (productId: string) => {
 };
 
 export const updateRating = async (productId: string, userRating: number) => {
+  await connectMongoDB();
+
   const product: IProduct | null = await ProductModel.findOne({ _id: productId });
 
   if (!product) return false;
