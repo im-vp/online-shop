@@ -13,6 +13,8 @@ interface Props {
   searchParams: { [key: string]: string };
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: Props) {
   const categoryName = params['category-slug'];
   const { data } = await getProducts(categoryName);

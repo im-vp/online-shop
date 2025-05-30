@@ -13,6 +13,8 @@ interface Props {
   params: { 'product-slug': string };
 }
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata({ params }: Props) {
   const productName = params['product-slug'];
   const { data, success } = await getProduct(productName);

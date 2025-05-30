@@ -5,7 +5,7 @@ export const connectMongoDB = async () => {
     return mongoose.connection.asPromise();
   }
 
-  return await mongoose.connect(process.env.MONGO_DB_URL as string, {
+  return await mongoose.connect(process.env.MONGODB_URI as string, {
     dbName: 'online-shop',
   });
 };
