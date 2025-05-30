@@ -12,14 +12,19 @@ export const getProduct = async (slug: string) => {
 
   try {
     await connectMongoDB();
-
+    console.log(1);
     const product: IProduct | null = await ProductModel.findOne({ slug }).populate('category');
+    console.log(2, product);
 
     if (!product) {
       return { data: null, success: false, message: 'товар не найден' };
     }
 
-    return { data: JSON.parse(JSON.stringify(product)) as IProduct, success: true, message: 'Товар получен' };
+    return {
+      data: JSON.parse(JSON.stringify(product)) as IProduct,
+      success: true,
+      message: 'Товар получен',
+    };
   } catch (e: any) {
     return { data: null, success: false, message: e.message };
   }
