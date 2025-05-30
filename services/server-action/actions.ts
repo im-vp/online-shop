@@ -29,6 +29,7 @@ export const isUserByIdToken = async (token: string) => {
   const id = parseJwt(token).id;
 
   if (!id) return false;
+  await connectMongoDB();
 
   const user: IUser | null = await UserModel.findOne({
     _id: id,
@@ -41,6 +42,7 @@ export const findRefreshTokenByUserId = async (token: string) => {
   const userId = parseJwt(token).id;
 
   if (!userId) return false;
+  await connectMongoDB();
 
   const refreshToken = await RefreshTokenModel.findOne({
     user: userId,
@@ -51,7 +53,7 @@ export const findRefreshTokenByUserId = async (token: string) => {
 
 export const updateRefreshToken = async (oldToken: string, newToken: string) => {
   if (!oldToken || !newToken) return;
-
+  await connectMongoDB();
   await RefreshTokenModel.updateOne(
     {
       token: oldToken,
@@ -64,7 +66,7 @@ export const updateRefreshToken = async (oldToken: string, newToken: string) => 
 
 export const getUserById = async (id: string): Promise<IUser | null> => {
   if (!id) return null;
-
+  await connectMongoDB();
   const user = await UserModel.findOne({ _id: id }).select('-password');
 
   return user ? user : null;

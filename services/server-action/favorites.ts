@@ -2,6 +2,8 @@
 
 import { revalidatePath } from 'next/cache';
 
+import { connectMongoDB } from '@/lib/mongodb';
+
 import FavoritesModel from '@/models/favoritesModel';
 import ProductModel from '@/models/productModel';
 import { getUserIdByTokenFromCookie } from '@/services/server-action/actions';
@@ -34,6 +36,7 @@ export const getUserFavoritesProducts = async (): Promise<IProduct[] | null> => 
 };
 
 export const getFavoritesByUserId = async (userId: string) => {
+  await connectMongoDB();
   const userFavorites = await FavoritesModel.findOne({ user: userId });
 
   return userFavorites ? userFavorites.favorites : null;
@@ -42,6 +45,7 @@ export const getFavoritesByUserId = async (userId: string) => {
 export const toggleFavorite = async (productId: string) => {
   if (!productId) return { success: false, message: 'Не передан productId' };
   try {
+    await connectMongoDB();
     const userId = await getUserIdByTokenFromCookie();
     if (!userId)
       return { success: false, data: { isAuth: false }, message: 'Пользователь не авторизован' };
