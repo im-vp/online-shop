@@ -10,13 +10,15 @@ export async function GET(request: NextRequest) {
 
   await connectMongoDB();
   try {
+    console.log(1);
+
     const product: IProduct | null = await ProductModel.findOne({
       slug: productSlug,
     }).populate({
       path: 'category',
       model: 'Categories',
     });
-
+    console.log(product, 2);
     if (!product) {
       return NextResponse.json({ success: false, message: 'Товар не найден' }, { status: 404 });
     }
