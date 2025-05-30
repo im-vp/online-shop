@@ -18,7 +18,6 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata({ params }: Props) {
   const productName = params['product-slug'];
   const { data, success } = await getProduct(productName);
-console.log(data, success, 'LOG');
 
   if (success && data) {
     return {
@@ -30,9 +29,9 @@ console.log(data, success, 'LOG');
 
 const ProductPage: FC<Props> = async ({ params }) => {
   const { 'product-slug': productSlug } = params;
-
+ console.log('LOG 1');
   const { success, data } = await getProduct(productSlug);
-
+  console.log(data, success, 'LOG');
   if (!success || !data) {
     return notFound();
   }
