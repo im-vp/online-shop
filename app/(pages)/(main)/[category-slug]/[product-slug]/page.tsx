@@ -29,9 +29,8 @@ export async function generateMetadata({ params }: Props) {
 
 const ProductPage: FC<Props> = async ({ params }) => {
   const { 'product-slug': productSlug } = params;
- console.log('LOG 1');
   const { success, data } = await getProduct(productSlug);
-  console.log(data, success, 'LOG');
+
   if (!success || !data) {
     return notFound();
   }

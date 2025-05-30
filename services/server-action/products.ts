@@ -2,6 +2,7 @@
 
 import { connectMongoDB } from '@/lib/mongodb';
 
+import CategoriesModel from '@/models/categoriesModel';
 import ProductModel from '@/models/productModel';
 import { IProduct } from '@/types/types';
 
@@ -12,9 +13,10 @@ export const getProduct = async (slug: string) => {
 
   try {
     await connectMongoDB();
-    console.log(1);
-    const product: IProduct | null = await ProductModel.findOne({ slug }).populate('category');
-    console.log(2, product);
+    const product: IProduct | null = await ProductModel.findOne({ slug }).populate({
+      path: 'category',
+      model: CategoriesModel,
+    });
 
     if (!product) {
       return { data: null, success: false, message: 'товар не найден' };
