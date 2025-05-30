@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
 
     const products: IProduct[] | null = await ProductModel.find(filter) //@ts-ignore
       .sort({ [sortObject[sort].field]: sortObject[sort].order })
-      .populate('category');
+      .populate({ path: 'category', model: CategoriesModel });
 
     if (!products) {
       return NextResponse.json({ success: false, message: 'Товар не найден' }, { status: 404 });
