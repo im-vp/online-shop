@@ -116,6 +116,45 @@ export const errorHandler = (error: any): string => {
   return error.message;
 };
 
+export const serverErrorHandler = (error: any) => {
+  const base = {
+    success: false,
+    message: 'Произошла ошибка',
+    data: null,
+    status: 500,
+    error,
+  };
+
+  // Если это MongoDB ошибка с подробностями
+  if (error?.errorResponse?.errmsg) {
+    return {
+      ...base,
+      message: error.errorResponse.errmsg,
+    };
+  }
+  // Валидационные ошибки (например, Mongoose)
+  if (error?.name === 'ValidationError') {
+    return {
+      ...base,
+      message: error.message,
+    };
+  }
+  // Кастомные ошибки
+  if (typeof error === 'string') {
+    return {
+      ...base,
+      message: error,
+    };
+  }
+  if (error?.message) {
+    return {
+      ...base,
+      message: error.message,
+    };
+  }
+  return base;
+};
+
 export const parseCookiesString = (cookiesString: string) => {
   const arr: { cookieName: string; cookieValue: string }[] = [];
 

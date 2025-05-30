@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: Props) {
   const categoryName = params['category-slug'];
   const { data } = await getProducts(categoryName);
 
-  if (data.productsQuantity > 1) {
+  if (data && data.productsQuantity > 1) {
     return {
       title: data.products[0].category.name,
       description: `Купить ${categoryName} в интернет магазине 'Online Shop'`,
@@ -38,7 +38,7 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
 
   const { success, data } = await getProducts(categoryName, getStringFilterParams(searchParams));
 
-  if (!success) {
+  if (!success || !data) {
     return notFound();
   }
   const favorites = await getUserFavoritesIds();

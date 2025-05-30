@@ -1,12 +1,13 @@
 'use server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import CategoriesModel from '@/models/categoriesModel';
 import ProductModel from '@/models/productModel';
-import { IProduct } from '@/types/types';
+import { IApiResponse, IProduct } from '@/types/types';
 
-export const getProduct = async (slug: string) => {
+export const getProduct = async (slug: string | null): Promise<IApiResponse<IProduct>> => {
   if (!slug) {
     return { data: null, success: false, message: 'товар не найден' };
   }
@@ -27,8 +28,8 @@ export const getProduct = async (slug: string) => {
       success: true,
       message: 'Товар получен',
     };
-  } catch (e: any) {
-    return { data: null, success: false, message: e.message };
+  } catch (error: any) {
+    return serverErrorHandler(error);
   }
 };
 

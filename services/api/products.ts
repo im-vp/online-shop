@@ -12,7 +12,7 @@ export const ProductApi = {
 
       return data;
     } catch (error) {
-      return { success: false, data: [], message: errorHandler(error) };
+      return { success: false, data: null, message: errorHandler(error) };
     }
   },
 };
@@ -30,7 +30,7 @@ export const getProducts = async (
     return data;
   } catch (error) {
     //@ts-ignore
-    return { success: false, data: {}, message: errorHandler(error) };
+    return { success: false, data: null, message: errorHandler(error) };
   }
 };
 

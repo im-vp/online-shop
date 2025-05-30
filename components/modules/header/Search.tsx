@@ -30,7 +30,7 @@ export const Search: FC<Props> = ({ onFocus }) => {
   }, [searchText]);
 
   useEffect(() => {
-    if (isSuccess && data && data.success) {
+    if (isSuccess && data?.data && data.success) {
       setProductsList(data.data);
     }
   }, [isSuccess, data]);

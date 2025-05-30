@@ -35,7 +35,7 @@ export const Category = ({
   const { data, isSuccess, isFetching } = useGetProductsQuery(category.slug, stringParams);
 
   useEffect(() => {
-    if (isSuccess && data && data.success) {
+    if (isSuccess && data?.data && data.success) {
       setProductsList(data.data.products);
     }
   }, [isSuccess, data]);

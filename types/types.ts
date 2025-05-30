@@ -30,7 +30,9 @@ export interface IProduct {
 export interface IApiResponse<T = null> {
   success: boolean;
   message: string;
-  data: T;
+  data: T | null;
+  status?: number;
+  error?: any;
 }
 
 export interface IProductResponse {
