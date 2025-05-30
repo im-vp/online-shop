@@ -9,12 +9,14 @@ import { OrdersApi } from '@/services/api/orders';
 import '@/styles/cabinet-page/orders.css';
 import { useQuery } from '@tanstack/react-query';
 
-interface Props {}
+interface Props {
+  userId: string;
+}
 
-const Orders: FC<Props> = ({}) => {
-  const { data, isPending, isSuccess, isError } = useQuery({
+const Orders: FC<Props> = ({ userId }) => {
+  const { data, isPending, isSuccess } = useQuery({
     queryKey: ['orders'],
-    queryFn: () => OrdersApi.getById('66e0518c154da6eadf35d704'),
+    queryFn: () => OrdersApi.getById(userId),
   });
 
   return (

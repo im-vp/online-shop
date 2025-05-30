@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import OrderModel from '@/models/orderModel';
+import ProductModel from '@/models/productModel';
 import { IOrder } from '@/types/types';
 
 export async function GET(request: NextRequest) {
@@ -21,7 +23,10 @@ export async function GET(request: NextRequest) {
       userId,
     })
       .sort({ createdAt: -1 })
-      .populate('products.product');
+      .populate({
+        path: 'products.product',
+        model: ProductModel,
+      });
 
     if (!orders || !orders.length) {
       return NextResponse.json({ success: false, message: 'Список заказов пуст' }, { status: 404 });
@@ -29,12 +34,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ success: true, data: orders, message: 'Ваши заказы' });
   } catch (error: any) {
-    if (error.errorResponse) {
-      return NextResponse.json({ success: false, message: error.errorResponse.errmsg });
-    }
-    if (error.name === 'ValidationError') {
-      return NextResponse.json({ success: false, message: error.message });
-    }
-    return NextResponse.json({ error });
+    const result = serverErrorHandler(error);
+    return NextResponse.json(result, { status: result.status });
   }
 }

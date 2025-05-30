@@ -1,3 +1,5 @@
+import { redirect } from 'next/navigation';
+
 import UserProfile from '@/components/pages/Cabinet/Profile';
 
 import { getUserProfile } from '@/services/server-action/actions';
@@ -5,19 +7,11 @@ import { getUserProfile } from '@/services/server-action/actions';
 export const dynamic = 'force-dynamic';
 
 const Page = async () => {
-  const data = await getUserProfile();
+  const profile = await getUserProfile();
 
-  const parseUserProfile = data ? JSON.parse(JSON.stringify(data)) : [];
+  if (!profile) redirect('/authentication');
 
-  return (
-    <>
-      {parseUserProfile ? (
-        <UserProfile profile={parseUserProfile} />
-      ) : (
-        <h2 className="cabinet-page__title">Данные профиля отсутствуют</h2>
-      )}
-    </>
-  );
+  return <UserProfile profile={profile} />;
 };
 
 export default Page;
