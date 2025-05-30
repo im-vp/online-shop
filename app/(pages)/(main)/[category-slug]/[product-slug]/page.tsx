@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/modules/breadcrumbs/Breadcrumbs';
 import Product from '@/components/pages/Product/Product';
 
-import { getProduct } from '@/services/api/products';
 import { getUserProfile, loginCheck } from '@/services/server-action/actions';
+import { getProduct } from '@/services/server-action/products';
 import { getReviewsByProductId } from '@/services/server-action/reviews';
 
 interface Props {
@@ -19,27 +19,31 @@ export async function generateMetadata({ params }: Props) {
   const productName = params['product-slug'];
   const { data, success } = await getProduct(productName);
 
-  return {
-    title: data.name,
-    description: `Купить ${data.name}, ${data.description ? data.description : ''}'`,
-  };
+  if (success && data) {
+    return {
+      title: data.name,
+      description: `Купить ${data.name}, ${data.description ? data.description : ''}'`,
+    };
+  }
 }
 
 const ProductPage: FC<Props> = async ({ params }) => {
   const { 'product-slug': productSlug } = params;
 
   const { success, data } = await getProduct(productSlug);
+
+  if (!success || !data) {
+    return notFound();
+  }
+
   const isAuth = await loginCheck();
 
   const profile = isAuth && (await getUserProfile());
   const parseUserProfile = profile ? JSON.parse(JSON.stringify(profile)) : null;
 
   const reviews = await getReviewsByProductId(data._id);
-  const parseUserReviews = JSON.parse(JSON.stringify(reviews));
 
-  if (!success) {
-    return notFound();
-  }
+  const parseUserReviews = JSON.parse(JSON.stringify(reviews));
 
   return (
     <>
