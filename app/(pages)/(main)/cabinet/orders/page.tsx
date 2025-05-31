@@ -8,7 +8,6 @@ export const dynamic = 'force-dynamic';
 
 const OrdersPage = async () => {
   const profile = await getUserProfile();
-  console.log(profile);
 
   if (!profile) redirect('/authentication');
 

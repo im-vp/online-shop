@@ -68,7 +68,7 @@ export const getUserById = async (id: string): Promise<IUser | null> => {
   if (!id) return null;
   await connectMongoDB();
   const user = await UserModel.findOne({ _id: id }).select('-password');
-  console.log(user, 'user');
+
   return user ? JSON.parse(JSON.stringify(user)) : null;
 };
 
@@ -84,12 +84,11 @@ export const getUserIdByTokenFromCookie = async () => {
 
 export const getUserProfile = async () => {
   const id = await getUserIdByTokenFromCookie();
-  console.log(id, 'id');
 
   if (!id) return null;
 
   const user = await getUserById(id);
- console.log(user, 'id - user');
+
   if (!user) return null;
 
   return user;
