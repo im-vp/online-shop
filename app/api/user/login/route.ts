@@ -46,6 +46,7 @@ export async function POST(request: Request, response: Response) {
       });
     }
 
+    
     const newHeaders = new Headers(response.headers);
 
     newHeaders.set(
