@@ -5,6 +5,7 @@ import bcrypt from 'bcryptjs';
 import { connectMongoDB } from '@/lib/mongodb';
 import { generateTokens, serverErrorHandler } from '@/lib/utils/utils';
 
+import { getCorsHeaders } from '@/constants/corsHeaders';
 import { COOKIE_LIFETIME } from '@/constants/server';
 import RefreshTokenModel from '@/models/refreshTokenModel';
 import UserModel from '@/models/userModel';
@@ -72,4 +73,10 @@ export async function POST(request: Request, response: Response) {
       { status: result.status },
     );
   }
+}
+
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+  return NextResponse.json({}, corsHeaders);
 }
