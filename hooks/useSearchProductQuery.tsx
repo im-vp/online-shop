@@ -11,7 +11,7 @@ export const useSearchProductQuery = (val: string) => {
   const [enabled, setEnabled] = useState(false);
   const [debouncedValue] = useDebounce(val, 1000);
 
-  const { data, isSuccess, isFetching } = useQuery({
+  const { data, isSuccess, isPending } = useQuery({
     queryKey: ['search', val],
     queryFn: () => ProductApi.getProductsBySearch(debouncedValue),
     enabled,
@@ -25,5 +25,5 @@ export const useSearchProductQuery = (val: string) => {
     }
   }, [debouncedValue, val]);
 
-  return { data, isSuccess, isFetching };
+  return { data, isSuccess, isPending };
 };
