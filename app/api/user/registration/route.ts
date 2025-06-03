@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import UserModel from '@/models/userModel';
 import { IUser } from '@/types/user-types';
@@ -35,9 +36,11 @@ export async function POST(request: NextRequest) {
       { status: 200 },
     );
   } catch (error) {
+    const result = serverErrorHandler(error);
+
     return NextResponse.json(
-      { success: false, message: 'Что-то пошло не так...', error },
-      { status: 500 },
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status },
     );
   }
 }

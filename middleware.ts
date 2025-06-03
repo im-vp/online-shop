@@ -1,15 +1,17 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { isTokenValid, parseCookiesString, setExpireDay } from '@/lib/utils/utils';
+import { parse } from 'set-cookie-parser';
 
-import { axiosInstance } from '@/services/api/instance';
-import { userLoginCheck } from '@/services/api/user';
+import { isTokenValid } from '@/lib/utils/utils';
 
-export async function middleware(request: NextRequest, response: NextResponse) {
+import { userRefreshTokens } from '@/services/api/user';
+
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const accessToken = request.cookies.get('accessToken');
   const refreshToken = request.cookies.get('refreshToken');
+
   const headers = new Headers(request.headers);
   headers.set('x-url', request.url);
 
@@ -36,60 +38,33 @@ export async function middleware(request: NextRequest, response: NextResponse) {
     });
   }
 
-  const { success } = await userLoginCheck();
+  const refreshResponse = await userRefreshTokens({
+    headers: {
+      Cookie: request.headers.get('cookie'),
+    },
+    withCredentials: true,
+  });
 
-  if (!success) {
-    const data = await axiosInstance.get('/user/refresh').catch((error) => {});
+  if (!refreshResponse.data?.success && pathname.startsWith('/cabinet')) {
+    return NextResponse.redirect(new URL('/authentication', request.url));
+  }
+  const setCookieHeader = refreshResponse.headers['set-cookie'];
+  const parsedCookies = setCookieHeader ? parse(setCookieHeader) : ([] as any[]);
+  const response = NextResponse.redirect(new URL(request.nextUrl.pathname, request.url));
 
-    if (data && data.headers['set-cookie']) {
-      //@ts-ignore
-      const cookieList = data.headers['set-cookie'] as string;
-
-      const cookieRequest = parseCookiesString(cookieList);
-
-      cookieRequest.forEach((item, index) => {
-        if (index === 0) {
-          headers.set(
-            'cookie',
-            `${item.cookieName}=${item.cookieValue}; path=/; max-age=${setExpireDay(5)}; HttpOnly;`,
-          );
-        } else {
-          headers.append(
-            'cookie',
-            `${item.cookieName}=${item.cookieValue}; path=/; max-age=${setExpireDay(5)}; HttpOnly;`,
-          );
-        }
+  for (const cookie of parsedCookies) {
+    if (cookie.name === 'accessToken' || cookie.name === 'refreshToken') {
+      response.cookies.set(cookie.name, cookie.value, {
+        httpOnly: cookie.httpOnly,
+        sameSite: cookie.sameSite,
+        path: cookie.path,
+        expires: cookie.expires,
+        secure: cookie.secure,
       });
-
-      const nextResponse = NextResponse.next({
-        request: {
-          headers,
-        },
-      });
-    
-      const cookieResponse = parseCookiesString(cookieList);
-
-      cookieResponse.forEach((item) => {
-        nextResponse.cookies.set(item.cookieName, item.cookieValue, {
-          httpOnly: true,
-          path: '/',
-          maxAge: setExpireDay(5),
-        });
-      });
-
-      return nextResponse;
-    }
-
-    if (pathname.startsWith('/cabinet')) {
-      return NextResponse.redirect(new URL('/authentication', request.nextUrl));
     }
   }
 
-  return NextResponse.next({
-    request: {
-      headers,
-    },
-  });
+  return response;
 }
 
 export const config = {

@@ -3,8 +3,9 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 
 import { connectMongoDB } from '@/lib/mongodb';
-import { generateTokens, setExpireDay } from '@/lib/utils/utils';
+import { generateTokens, serverErrorHandler } from '@/lib/utils/utils';
 
+import { COOKIE_LIFETIME } from '@/constants/server';
 import RefreshTokenModel from '@/models/refreshTokenModel';
 import UserModel from '@/models/userModel';
 import { IUser } from '@/types/user-types';
@@ -46,27 +47,29 @@ export async function POST(request: Request, response: Response) {
       });
     }
 
-    
-    const newHeaders = new Headers(response.headers);
+    const response = NextResponse.json({ success: true, message: 'Вы авторизованы' });
 
-    newHeaders.set(
-      'set-cookie',
-      `accessToken=${newAccessToken};path=/;expires=${setExpireDay(5)};HttpOnly;SameSite=Strict`,
-    );
-    newHeaders.append(
-      'set-cookie',
-      `refreshToken=${newRefreshToken};path=/;expires=${setExpireDay(5)};HttpOnly;SameSite=Strict`,
-    );
-    return NextResponse.json(
-      { success: true, message: 'Вы авторизованы' },
-      {
-        headers: newHeaders,
-      },
-    );
+    response.cookies.set('accessToken', newAccessToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: COOKIE_LIFETIME.accessToken,
+    });
+
+    response.cookies.set('refreshToken', newRefreshToken, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'strict',
+      maxAge: COOKIE_LIFETIME.refreshToken,
+    });
+
+    return response;
   } catch (error: any) {
+    const result = serverErrorHandler(error);
+
     return NextResponse.json(
-      { success: false, message: 'Что-то пошло не так...', error: error.message },
-      { status: 500 },
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status },
     );
   }
 }

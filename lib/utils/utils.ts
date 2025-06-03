@@ -155,24 +155,6 @@ export const serverErrorHandler = (error: any) => {
   return base;
 };
 
-export const parseCookiesString = (cookiesString: string) => {
-  const arr: { cookieName: string; cookieValue: string }[] = [];
-
-  const string = Array.isArray(cookiesString) ? cookiesString.join() : cookiesString;
-
-  string.split(',').forEach((cookie) => {
-    const cookieParams = cookie.split(';');
-    cookieParams.splice(-1);
-
-    const cookieName = decodeURIComponent(cookieParams[0]).split('=')[0];
-    const cookieValue = decodeURIComponent(cookieParams[0]).split('=')[1];
-
-    arr.push({ cookieName, cookieValue });
-  });
-
-  return arr;
-};
-
 export const generateProductCode = (slug: string, date = new Date()) => {
   const dateString = date.toISOString().slice(0, 10).replace(/-/g, ''); // Пример: 20241028
   const categoryPrefix = slug.substring(0, 3).toUpperCase(); // Первые буквы slug-а

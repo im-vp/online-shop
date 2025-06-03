@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import { getUserById } from '@/services/server-action/actions';
 
@@ -26,9 +27,11 @@ export async function POST(request: NextRequest) {
       { status: 404 },
     );
   } catch (error: any) {
+    const result = serverErrorHandler(error);
+
     return NextResponse.json(
-      { success: false, message: 'Что-то пошло не так...', error: error.message },
-      { status: 500 },
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status },
     );
   }
 }

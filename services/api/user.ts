@@ -1,4 +1,4 @@
-import { AxiosRequestConfig } from 'axios';
+import { AxiosRequestConfig, AxiosResponse } from 'axios';
 
 import { errorHandler } from '@/lib/utils/utils';
 
@@ -54,12 +54,19 @@ export const userLoginCheck = async (config?: { [key: string]: any }): Promise<I
 
 export const userRefreshTokens = async (
   config?: AxiosRequestConfig,
-): Promise<IApiResponse | { success: false; data: null }> => {
+): Promise<{ data: IApiResponse | null; headers: any; error?: string }> => {
   try {
-    const { data } = await axiosInstance.get<IApiResponse>('/user/refresh', config);
+    const response = await axiosInstance.get<IApiResponse>('/user/refresh', config);
 
-    return data;
+    return {
+      data: response.data,
+      headers: response.headers,
+    };
   } catch (error) {
-    return { success: false, data: null, message: errorHandler(error) };
+    return {
+      data: null,
+      headers: {},
+      error: errorHandler(error),
+    };
   }
 };

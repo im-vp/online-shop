@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 export async function GET(request: Request, response: Response) {
   try {
@@ -27,9 +28,11 @@ export async function GET(request: Request, response: Response) {
       message: 'Вы вышли из аккаунта',
     });
   } catch (error: any) {
+    const result = serverErrorHandler(error);
+
     return NextResponse.json(
-      { success: false, message: 'Что-то пошло не так...', error: error.message },
-      { status: 500 },
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status },
     );
   }
 }
