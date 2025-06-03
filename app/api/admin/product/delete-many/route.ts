@@ -1,11 +1,14 @@
 import { NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
-import { corsHeaders } from '@/constants/corsHeaders';
+import { getCorsHeaders } from '@/constants/corsHeaders';
 import ProductSchema from '@/models/productModel';
 
 export async function DELETE(request: Request, response: Response) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
   try {
     const { id } = await request.json();
 
@@ -34,17 +37,17 @@ export async function DELETE(request: Request, response: Response) {
       corsHeaders,
     );
   } catch (error: any) {
-    if (error.errorResponse) {
-      return NextResponse.json(
-        { success: false, message: error.errorResponse.errmsg },
-        { ...corsHeaders },
-      );
-    }
+    const result = serverErrorHandler(error);
 
-    return NextResponse.json({ success: false, message: error }, corsHeaders);
+    return NextResponse.json(
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status, headers: corsHeaders.headers },
+    );
   }
 }
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { ...corsHeaders });
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+  return NextResponse.json({}, corsHeaders);
 }

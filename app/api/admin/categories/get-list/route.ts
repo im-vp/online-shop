@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
-import { corsHeaders } from '@/constants/corsHeaders';
+import { getCorsHeaders } from '@/constants/corsHeaders';
 import CategoriesSchema from '@/models/categoriesModel';
 import { ICategories } from '@/types/types';
 
 export async function GET(request: NextRequest) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+
   try {
     await connectMongoDB();
     const url = new URL(request.url);
@@ -33,9 +37,17 @@ export async function GET(request: NextRequest) {
       corsHeaders,
     );
   } catch (error: any) {
+    const result = serverErrorHandler(error);
+
     return NextResponse.json(
-      { success: false, message: 'Что-то пошло не так...', error: error.message },
-      { status: 500 },
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status, headers: corsHeaders.headers },
     );
   }
+}
+
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+  return NextResponse.json({}, corsHeaders);
 }

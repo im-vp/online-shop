@@ -4,14 +4,17 @@ import { writeFile } from 'fs/promises';
 import path from 'path';
 
 import { connectMongoDB } from '@/lib/mongodb';
-import { generateProductCode } from '@/lib/utils/utils';
+import { generateProductCode, serverErrorHandler } from '@/lib/utils/utils';
 
-import { corsHeaders } from '@/constants/corsHeaders';
+import { getCorsHeaders } from '@/constants/corsHeaders';
 import CategoriesModel from '@/models/categoriesModel';
 import ProductSchema from '@/models/productModel';
 import { ICategories } from '@/types/types';
 
 export async function POST(request: Request, response: Response) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+
   try {
     const formData = await request.formData();
 
@@ -40,7 +43,7 @@ export async function POST(request: Request, response: Response) {
           success: false,
           message: `Товар с таким slug(${slug}), уже существует. id - ${productSlug._id}`,
         },
-        { ...corsHeaders },
+        corsHeaders,
       );
     }
 
@@ -89,20 +92,17 @@ export async function POST(request: Request, response: Response) {
       corsHeaders,
     );
   } catch (error: any) {
-    if (error.errorResponse) {
-      return NextResponse.json(
-        { success: false, message: error.errorResponse.errmsg },
-        { ...corsHeaders },
-      );
-    }
-    if (error.name === 'ValidationError') {
-      return NextResponse.json({ success: false, message: error.message }, { ...corsHeaders });
-    }
+    const result = serverErrorHandler(error);
 
-    return NextResponse.json({ success: false, message: error.message }, corsHeaders);
+    return NextResponse.json(
+      { success: result.success, message: result.message, error: result.error },
+      { status: result.status, headers: corsHeaders.headers },
+    );
   }
 }
 
-export async function OPTIONS() {
-  return NextResponse.json({}, { ...corsHeaders });
+export async function OPTIONS(request: Request) {
+  const origin = request.headers.get('origin');
+  const corsHeaders = { headers: getCorsHeaders(origin) };
+  return NextResponse.json({}, corsHeaders);
 }
