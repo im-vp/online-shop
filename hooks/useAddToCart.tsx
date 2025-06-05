@@ -13,7 +13,7 @@ export const useAddToCart = () => {
 
   const [isCartLoading, setCartLoading] = useState(isLoadingStatus === 'loading');
   const [isAddToCartButtonLoading, setAddToCartButtonLoading] = useState(
-    isLoadingStatus === 'loading' && isLoadingProductId === idProduct,
+    isLoadingStatus === 'loading' && isLoadingProductId.length && isLoadingProductId === idProduct,
   );
 
   const togglePopup = usePopupStore((state) => state.togglePopup);
@@ -28,7 +28,11 @@ export const useAddToCart = () => {
       togglePopup(POPUP_ID.cart);
     }
     setCartLoading(isLoadingStatus === 'loading');
-    setAddToCartButtonLoading(isLoadingStatus === 'loading' && isLoadingProductId === idProduct);
+    setAddToCartButtonLoading(
+      isLoadingStatus === 'loading' &&
+        isLoadingProductId.length &&
+        isLoadingProductId === idProduct,
+    );
   }, [isLoadingStatus, isLoadingProductId]);
 
   return {
