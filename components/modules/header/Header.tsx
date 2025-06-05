@@ -5,16 +5,12 @@ import HeaderBottom from '@/components/modules/header/HeaderBottom';
 import HeaderProvider from '@/components/modules/header/HeaderProvider';
 
 import logo from '@/public/image/assets/logo.png';
-import { getCategories } from '@/services/api/categories';
-import { getCartQuantity, loginCheck } from '@/services/server-action/actions';
-import { getUserFavoritesIds } from '@/services/server-action/favorites';
+import { getStaticData } from '@/services/server-action/header';
+import { fetchInitialUserData } from '@/services/server-action/profile';
 
 const Header = async () => {
-  const { data } = await getCategories();
-  const categories = data?.categories || [];
-  const isAuth = await loginCheck();
-  const myFavorites = await getUserFavoritesIds();
-  const cartQuantity = await getCartQuantity();
+  const { categories, cartQuantity } = await getStaticData();
+  const { isAuth, myFavorites } = await fetchInitialUserData();
 
   return (
     <HeaderProvider value={{ isAuth, myFavorites, cartQuantity }}>
@@ -27,9 +23,7 @@ const Header = async () => {
               </Link>
             </div>
           </div>
-          <HeaderBottom
-            categories={categories}
-          />
+          <HeaderBottom categories={categories} />
         </div>
       </header>
     </HeaderProvider>
