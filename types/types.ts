@@ -151,3 +151,9 @@ export type OrderCreateApi = Omit<
     quantity: number;
   }[];
 };
+
+export interface IHeaderData {
+  isAuth: boolean;
+  myFavorites: string[] | null;
+  cartQuantity: number;
+}

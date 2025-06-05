@@ -1,19 +1,18 @@
-import { FC, useEffect, useState } from 'react';
+import { FC, useContext, useEffect, useState } from 'react';
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import { useFavoritesStore } from '@/store/FavoritesStore';
 import { useUserStore } from '@/store/UserStore';
+import { UserContext } from '@/components/modules/header/HeaderProvider';
 
-interface Props {
-  isAuth: boolean;
-  isFavorites: string[] | null;
-}
+interface Props {}
 
-const ProfileBlock: FC<Props> = ({ isAuth, isFavorites }) => {
+const ProfileBlock: FC<Props> = () => {
+  const { isAuth, myFavorites } = useContext(UserContext);
   const path = usePathname();
-  const [isUserFavorites, setIsUerFavorites] = useState(isFavorites);
+  const [isUserFavorites, setIsUerFavorites] = useState(myFavorites);
   const { addAllFavorites, favorites } = useFavoritesStore((state) => state);
   const setAuthStatus = useUserStore().setAuthStatus;
 
@@ -23,7 +22,7 @@ const ProfileBlock: FC<Props> = ({ isAuth, isFavorites }) => {
 
   useEffect(() => {
     isUserFavorites && addAllFavorites(isUserFavorites);
-  }, [isFavorites]);
+  }, [myFavorites]);
 
   useEffect(() => {
     setIsUerFavorites(favorites);
