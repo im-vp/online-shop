@@ -1,6 +1,6 @@
 'use client';
 
-import { CSSProperties, useEffect } from 'react';
+import { CSSProperties } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -14,9 +14,8 @@ import Price from '@/components/elements/Price';
 import { Rating } from '@/components/elements/Rating';
 import Spinner from '@/components/ui/spinner/Spinner';
 
-import { POPUP_ID, SPINNER_STYLE } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
-import { usePopupStore } from '@/store/PopupStore';
+import { SPINNER_STYLE } from '@/constants/constants';
+import { useAddToCart } from '@/hooks/useAddToCart';
 import style from '@/styles/sliders/productSliders.module.css';
 import { IProduct } from '@/types/types';
 
@@ -31,13 +30,7 @@ export const ProductSliders = ({
   className?: string;
   inlineStyle?: CSSProperties;
 }) => {
-  const addToCart = useCartStore((state) => state.addToCart);
-  const isLoading = useCartStore((state) => state.cart.isLoading);
-  const togglePopup = usePopupStore((state) => state.togglePopup);
-
-  useEffect(() => {
-    isLoading.status === 'success' && togglePopup(POPUP_ID.cart);
-  }, [isLoading]);
+  const { addToCartHandler, isLoadingProductId } = useAddToCart();
 
   if (!products.length) return null;
 
@@ -60,12 +53,12 @@ export const ProductSliders = ({
             </div>
             <div className={style.bottom}>
               <Price price={product.price} />
-              {isLoading.status === 'loading' && isLoading.productId === product._id ? (
+              {isLoadingProductId === product._id ? (
                 <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCart} />
               ) : (
                 <CartButton
                   onClick={() => {
-                    addToCart(product._id);
+                    addToCartHandler(product._id);
                   }}
                 />
               )}

@@ -11,7 +11,7 @@ import { useCartStore } from '@/store/CartStore';
 import '@/styles/cart/cart.css';
 
 const Cart: FC = () => {
-  const { products, totalQuantity, totalSum } = useCartStore((state) => state.cart);
+  const { products, totalQuantity, totalSum } = useCartStore((state) => state);
   const plusOne = useCartStore((store) => store.plusOne);
   const minusOne = useCartStore((store) => store.minusOne);
   const removeProduct = useCartStore((store) => store.removeFromCart);

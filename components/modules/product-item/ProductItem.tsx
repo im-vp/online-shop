@@ -1,6 +1,6 @@
 'use client';
 
-import { FC, use, useEffect } from 'react';
+import { FC } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -11,9 +11,8 @@ import Price from '@/components/elements/Price';
 import { Rating } from '@/components/elements/Rating';
 import Spinner from '@/components/ui/spinner/Spinner';
 
-import { POPUP_ID, SPINNER_STYLE } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
-import { usePopupStore } from '@/store/PopupStore';
+import { SPINNER_STYLE } from '@/constants/constants';
+import { useAddToCart } from '@/hooks/useAddToCart';
 import style from '@/styles/product-item/product.module.css';
 import { IProduct } from '@/types/types';
 
@@ -35,13 +34,7 @@ export const ProductItem: FC<IProduct & Props> = ({
   rating,
   favorites = [],
 }) => {
-  const addToCart = useCartStore((state) => state.addToCart);
-  const isLoading = useCartStore((state) => state.cart.isLoading);
-  const togglePopup = usePopupStore((state) => state.togglePopup);
-
-  useEffect(() => {
-    isLoading.status === 'success' && togglePopup(POPUP_ID.cart);
-  }, [isLoading]);
+  const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
 
   return (
     <article className={`${style.product} ${className}`}>
@@ -56,12 +49,12 @@ export const ProductItem: FC<IProduct & Props> = ({
 
       <div className={style.product__price}>
         <Price price={price} />
-        {isLoading.status === 'loading' && isLoading.productId === _id ? (
+        {isAddToCartButtonLoading ? (
           <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCart} />
         ) : (
           <CartButton
             onClick={() => {
-              addToCart(_id);
+              addToCartHandler(_id);
             }}
           />
         )}
