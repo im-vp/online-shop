@@ -5,50 +5,23 @@ import { FC, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import HeaderCartButton from '@/components/modules/header/HeaderCartButton';
 import ProfileBlock from '@/components/modules/header/ProfileBlock';
 import { Search } from '@/components/modules/header/Search';
 
 import { isCurrentUrlMatch } from '@/lib/utils/utils';
 
-import { POPUP_ID } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
-import { usePopupStore } from '@/store/PopupStore';
 import { ICategories } from '@/types/types';
 
 interface Props {
   categories: ICategories[];
-  isAuth: boolean;
-  isFavorites: string[] | null;
-  cartQuantity: number;
 }
 
-const HeaderBottom: FC<Props> = ({ categories, isAuth, isFavorites, cartQuantity }) => {
-  const {
-    totalQuantity: totalQuantityState,
-    isLoading,
-    products,
-  } = useCartStore((state) => state.cart);
-  const openCart = useCartStore((state) => state.openCart);
-  const setTotalQuantityState = useCartStore((state) => state.setTotalQuantity);
-
-  const togglePopup = usePopupStore((state) => state.togglePopup);
+const HeaderBottom: FC<Props> = ({ categories }) => {
   const path = usePathname();
   const [activeButton, setActiveButton] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
   const [showComponent, setShowComponent] = useState(isCurrentUrlMatch(path));
-  const [totalQuantity, setTotalQuantity] = useState(cartQuantity);
-
-  useEffect(() => {
-    setTotalQuantityState(cartQuantity);
-  }, []);
-
-  useEffect(() => {
-    setTotalQuantity(totalQuantityState);
-  }, [totalQuantityState]);
-
-  useEffect(() => {
-    isLoading.status === 'success' && togglePopup(POPUP_ID.cart);
-  }, [isLoading]);
 
   useEffect(() => {
     setShowOverlay(false);
@@ -80,17 +53,8 @@ const HeaderBottom: FC<Props> = ({ categories, isAuth, isFavorites, cartQuantity
         }}
       />
       <div className="header__button-holder">
-        <ProfileBlock isAuth={isAuth} isFavorites={isFavorites} />
-        <button
-          type="button"
-          title="Корзина"
-          className="header__button icon-container header__button--cart"
-          onClick={() => {
-            products.length ? togglePopup(POPUP_ID.cart) : openCart();
-          }}
-        >
-          {totalQuantity > 0 && <span className="header__button--cart-count">{totalQuantity}</span>}
-        </button>
+        <ProfileBlock />
+        <HeaderCartButton />
       </div>
       {showOverlay && (
         <div

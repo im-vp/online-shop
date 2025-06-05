@@ -2,37 +2,31 @@ import Image from 'next/image';
 import Link from 'next/link';
 
 import HeaderBottom from '@/components/modules/header/HeaderBottom';
+import HeaderProvider from '@/components/modules/header/HeaderProvider';
 
 import logo from '@/public/image/assets/logo.png';
-import { getCategories } from '@/services/api/categories';
-import { getCartQuantity, loginCheck } from '@/services/server-action/actions';
-import { getUserFavoritesIds } from '@/services/server-action/favorites';
+import { getStaticData } from '@/services/server-action/header';
+import { fetchInitialUserData } from '@/services/server-action/profile';
 
 const Header = async () => {
-  const { data } = await getCategories();
-  const categories = data?.categories || [];
-  const isAuth = await loginCheck();
-  const isFavorites = await getUserFavoritesIds();
-  const cartQuantity = await getCartQuantity();
+  const { categories, cartQuantity } = await getStaticData();
+  const { isAuth, myFavorites } = await fetchInitialUserData();
 
   return (
-    <header className="header">
-      <div className="container header__container">
-        <div className="header__top">
-          <div className="header__logo">
-            <Link href="/" className="header__logo-link">
-              <Image src={logo} alt="Online Shop логотип" width={205} height={60} />
-            </Link>
+    <HeaderProvider value={{ isAuth, myFavorites, cartQuantity }}>
+      <header className="header">
+        <div className="container header__container">
+          <div className="header__top">
+            <div className="header__logo">
+              <Link href="/" className="header__logo-link">
+                <Image src={logo} alt="Online Shop логотип" width={205} height={60} />
+              </Link>
+            </div>
           </div>
+          <HeaderBottom categories={categories} />
         </div>
-        <HeaderBottom
-          categories={categories}
-          isAuth={isAuth}
-          isFavorites={isFavorites}
-          cartQuantity={cartQuantity}
-        />
-      </div>
-    </header>
+      </header>
+    </HeaderProvider>
   );
 };
 

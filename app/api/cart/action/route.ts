@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     },
   };
 
-  actionsCartCookie[action](productId, value || 1);
+  actionsCartCookie[action](productId || '', value || 1);
 
   const response = new NextResponse();
   response.cookies.set('cart', JSON.stringify(newCookieObj), {
@@ -54,19 +54,25 @@ export async function POST(request: NextRequest) {
       ...product,
       quantity: newCookieObj.find((item) => item.id === product._id.toString())?.quantity || 1,
       totalPrice:
-        product.price * (newCookieObj.find((item) => item.id === product._id.toString())?.quantity || 1),
+        product.price *
+        (newCookieObj.find((item) => item.id === product._id.toString())?.quantity || 1),
     }));
-   
+
     return NextResponse.json(
       {
         success: true,
-        products: productsCart,
-        totalQuantity: getCartTotalQuantity(productsCart),
-        totalSum: getCartTotalPrice(productsCart),
+        data: {
+          products: productsCart,
+          totalQuantity: getCartTotalQuantity(productsCart),
+          totalSum: getCartTotalPrice(productsCart),
+        },
       },
       { status: 200, headers: response.headers },
     );
   } else {
-    return NextResponse.json({ success: true }, { status: 200, headers: response.headers });
+    return NextResponse.json(
+      { success: true, data: null },
+      { status: 200, headers: response.headers },
+    );
   }
 }

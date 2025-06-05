@@ -118,8 +118,14 @@ type CartAction = 'add' | 'open' | 'quantity' | 'remove';
 
 export interface CartRequestBody {
   action: CartAction;
-  productId: string;
+  productId?: string;
   value?: number;
+}
+
+export interface ICartResponse {
+  products: ICartProduct[];
+  totalQuantity: number;
+  totalSum: number;
 }
 
 export interface IOrderProduct {
@@ -151,3 +157,9 @@ export type OrderCreateApi = Omit<
     quantity: number;
   }[];
 };
+
+export interface IHeaderData {
+  isAuth: boolean;
+  myFavorites: string[] | null;
+  cartQuantity: number;
+}

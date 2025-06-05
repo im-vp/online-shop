@@ -1,6 +1,6 @@
 'use client';
 
-import React, { FC, useEffect } from 'react';
+import { FC } from 'react';
 
 import Image from 'next/image';
 import Link from 'next/link';
@@ -10,9 +10,8 @@ import FavoritesButton from '@/components/elements/FavoritesButton';
 import Price from '@/components/elements/Price';
 import Spinner from '@/components/ui/spinner/Spinner';
 
-import { POPUP_ID, SPINNER_STYLE } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
-import { usePopupStore } from '@/store/PopupStore';
+import { SPINNER_STYLE } from '@/constants/constants';
+import { useAddToCart } from '@/hooks/useAddToCart';
 import { IProduct } from '@/types/types';
 
 interface Props {
@@ -21,13 +20,7 @@ interface Props {
 
 const FavoritesItem: FC<Props> = ({ product }) => {
   const { _id, images, path, name, price } = product;
-  const addToCart = useCartStore((state) => state.addToCart);
-  const isLoading = useCartStore((state) => state.cart.isLoading);
-  const togglePopup = usePopupStore((state) => state.togglePopup);
-
-  useEffect(() => {
-    !isLoading.status && togglePopup(POPUP_ID.cart);
-  }, [isLoading]);
+  const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
 
   return (
     <li className="favorites-item" key={_id}>
@@ -40,14 +33,14 @@ const FavoritesItem: FC<Props> = ({ product }) => {
         </Link>
         <Price className="favorites-item__price" price={price} />
         <div className="favorites-item__buttons">
-          {isLoading.status && isLoading.productId === product._id ? (
+          {isAddToCartButtonLoading ? (
             <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCartWithText} />
           ) : (
             <CartButton
               text="В корзину"
               className="favorites-item__btn-cart"
               onClick={() => {
-                addToCart(product._id);
+                addToCartHandler(product._id);
               }}
             />
           )}
