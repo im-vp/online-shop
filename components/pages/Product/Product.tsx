@@ -17,12 +17,11 @@ import { IUser } from '@/types/user-types';
 
 interface Props {
   product: IProduct;
-  isAuth: boolean;
   profile: IUser | null;
   reviews: IReviews[];
 }
 
-const Product: FC<Props> = ({ product, isAuth, profile, reviews }) => {
+const Product: FC<Props> = ({ product, profile, reviews }) => {
   const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
 
   return (
@@ -67,7 +66,6 @@ const Product: FC<Props> = ({ product, isAuth, profile, reviews }) => {
         <Reviews
           productId={product._id}
           productName={product.name}
-          isAuth={isAuth}
           profile={profile}
           reviews={reviews}
         />

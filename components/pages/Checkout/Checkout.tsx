@@ -21,7 +21,7 @@ import { IUser } from '@/types/user-types';
 import { useMutation } from '@tanstack/react-query';
 
 interface Props {
-  profile?: IUser;
+  profile: IUser | null;
   cartData: ICart;
 }
 

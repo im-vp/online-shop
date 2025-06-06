@@ -24,19 +24,18 @@ const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsFor
 interface IProps {
   productId: string;
   productName: string;
-  isAuth: boolean;
   profile: IUser | null;
   reviews: IReviews[];
 }
 
-export const Reviews = ({ productName, productId, isAuth = false, profile, reviews }: IProps) => {
+export const Reviews = ({ productName, productId, profile, reviews }: IProps) => {
   const [isFormShow, setIsFormShow] = useState(false);
 
   return (
     <section className="reviews">
       <h2 className="reviews__title">Отзывы про {productName}</h2>
 
-      {isAuth ? (
+      {profile ? (
         <div className="reviews__form-container">
           <button
             type="button"

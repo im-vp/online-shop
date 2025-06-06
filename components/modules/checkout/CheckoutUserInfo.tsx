@@ -11,7 +11,7 @@ import { InputMask } from '@react-input/mask';
 interface Props {
   register: UseFormRegister<CheckoutFormValues>;
   errors: FieldErrors<CheckoutFormValues>;
-  profile?: IUser;
+  profile: IUser | null;
   control: Control<CheckoutFormValues, any>;
 }
 

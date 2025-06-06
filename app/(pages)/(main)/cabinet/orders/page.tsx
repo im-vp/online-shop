@@ -4,10 +4,8 @@ import Orders from '@/components/pages/Cabinet/Orders';
 
 import { getUserProfile } from '@/services/server-action/actions';
 
-export const dynamic = 'force-dynamic';
-
 const OrdersPage = async () => {
-  const profile = await getUserProfile();
+  const { data: profile } = await getUserProfile();
 
   if (!profile) redirect('/authentication');
 

@@ -3,12 +3,18 @@
 import { cookies } from 'next/headers';
 
 import { connectMongoDB } from '@/lib/mongodb';
-import { getCartTotalPrice, getCartTotalQuantity, isTokenValid, parseJwt } from '@/lib/utils/utils';
+import {
+  getCartTotalPrice,
+  getCartTotalQuantity,
+  isTokenValid,
+  parseJwt,
+  serverErrorHandler,
+} from '@/lib/utils/utils';
 
 import ProductModel from '@/models/productModel';
 import RefreshTokenModel from '@/models/refreshTokenModel';
 import UserModel from '@/models/userModel';
-import { CartCookieValues, ICartProduct } from '@/types/types';
+import { CartCookieValues, IApiResponse, ICartProduct } from '@/types/types';
 import { IUser } from '@/types/user-types';
 
 export const getTokensFormCookie = () => {
@@ -82,16 +88,40 @@ export const getUserIdByTokenFromCookie = async () => {
   }
 };
 
-export const getUserProfile = async () => {
-  const id = await getUserIdByTokenFromCookie();
+export const getUserProfile = async (): Promise<IApiResponse<IUser>> => {
+  try {
+    const id = await getUserIdByTokenFromCookie();
 
-  if (!id) return null;
+    if (!id)
+      return {
+        success: false,
+        data: null,
+        message: 'Нет токена в куках',
+      };
 
-  const user = await getUserById(id);
+    const user = await getUserById(id);
 
-  if (!user) return null;
+    if (!user)
+      return {
+        success: false,
+        data: null,
+        message: 'Пользователь не найден',
+      };
 
-  return user;
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(user)),
+      message: 'Пользователь найден',
+    };
+  } catch (error) {
+    const result = serverErrorHandler(error);
+
+    return {
+      success: result.success,
+      data: result.data,
+      message: result.message,
+    };
+  }
 };
 
 export const getCartProducts = async () => {
