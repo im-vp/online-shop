@@ -1,18 +1,33 @@
 'use server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { errorHandler, serverErrorHandler } from '@/lib/utils/utils';
 
 import ProductModel from '@/models/productModel';
 import ReviewsModel from '@/models/reviewsModel';
-import { IProduct } from '@/types/types';
+import { IProduct, IReviews } from '@/types/types';
 
 export const getReviewsByProductId = async (productId: string) => {
-  await connectMongoDB();
-  const reviews = await ReviewsModel.find({ product: productId })
-    .populate('user')
-    .sort({ createdAt: -1 });
+  try {
+    await connectMongoDB();
+    const reviews = await ReviewsModel.find({ product: productId })
+      .populate('user')
+      .sort({ createdAt: -1 });
 
-  return reviews.length ? reviews : [];
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(reviews)) as IReviews[],
+      message: 'Отзывы о товаре',
+    };
+  } catch (error) {
+    const result = serverErrorHandler(error);
+
+    return {
+      success: result.success,
+      data: result.data,
+      message: result.message,
+    };
+  }
 };
 
 export const updateRating = async (productId: string, userRating: number) => {
