@@ -163,3 +163,12 @@ export interface IHeaderData {
   myFavorites: string[] | null;
   cartQuantity: number;
 }
+
+export interface IHomeProductsParams {
+  popularLimit?: number;
+  newLimit?: number;
+}
+export interface IHomeProductsResponse {
+  popularProducts: IProduct[] | null;
+  newProducts: IProduct[] | null;
+}

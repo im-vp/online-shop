@@ -5,7 +5,7 @@ import { serverErrorHandler } from '@/lib/utils/utils';
 
 import CategoriesModel from '@/models/categoriesModel';
 import ProductModel from '@/models/productModel';
-import { IApiResponse, IProduct } from '@/types/types';
+import { IApiResponse, IHomeProductsParams, IHomeProductsResponse, IProduct } from '@/types/types';
 
 export const getProduct = async (slug: string | null): Promise<IApiResponse<IProduct>> => {
   if (!slug) {
@@ -33,7 +33,49 @@ export const getProduct = async (slug: string | null): Promise<IApiResponse<IPro
   }
 };
 
-export const getPopularProducts = async (limit = 5) => {
+export const getHomeProducts = async ({
+  popularLimit,
+  newLimit,
+}: IHomeProductsParams = {}): Promise<IApiResponse<IHomeProductsResponse>> => {
+  try {
+    await connectMongoDB();
+    const [popular, newest] = await Promise.all([
+      getPopularProducts(popularLimit),
+      getNewProducts(newLimit),
+    ]);
+
+    if (!popular.success || !newest.success) {
+      return {
+        data: {
+          popularProducts: popular.data ?? null,
+          newProducts: newest.data ?? null,
+        },
+        success: false,
+        message: `Ошибка при получении ${
+          !popular.success && !newest.success
+            ? 'популярных и новых товаров'
+            : !popular.success
+              ? 'популярных товаров'
+              : 'новых товаров'
+        }`,
+      };
+    }
+    return {
+      data: {
+        popularProducts: popular.data,
+        newProducts: newest.data,
+      },
+      success: true,
+      message: 'Главные товары получены',
+    };
+  } catch (error: any) {
+    const result = serverErrorHandler(error);
+
+    return { data: result.data, success: result.success, message: result.message };
+  }
+};
+
+export const getPopularProducts = async (limit = 5): Promise<IApiResponse<IProduct[]>> => {
   try {
     await connectMongoDB();
 
@@ -45,9 +87,15 @@ export const getPopularProducts = async (limit = 5) => {
       return { data: [], success: false, message: 'товары не найдены' };
     }
 
-    return { data: products, success: true, message: 'Популярные товары получены' };
-  } catch (e: any) {
-    return { data: [], success: false, message: e.message };
+    return {
+      data: JSON.parse(JSON.stringify(products)),
+      success: true,
+      message: 'Популярные товары получены',
+    };
+  } catch (error: any) {
+    const result = serverErrorHandler(error);
+
+    return { data: result.data, success: result.success, message: result.message };
   }
 };
 
@@ -61,8 +109,14 @@ export const getNewProducts = async (limit = 5) => {
       return { data: [], success: false, message: 'товары не найдены' };
     }
 
-    return { data: products, success: true, message: 'Популярные товары получены' };
-  } catch (e: any) {
-    return { data: [], success: false, message: e.message };
+    return {
+      data: JSON.parse(JSON.stringify(products)),
+      success: true,
+      message: 'Популярные товары получены',
+    };
+  } catch (error: any) {
+    const result = serverErrorHandler(error);
+
+    return { data: result.data, success: result.success, message: result.message };
   }
 };
