@@ -45,8 +45,17 @@ export async function middleware(request: NextRequest) {
     withCredentials: true,
   });
 
-  if (!refreshResponse.data?.success && pathname.startsWith('/cabinet')) {
-    return NextResponse.redirect(new URL('/authentication', request.url));
+  if (!refreshResponse.data?.success) {
+    const response = pathname.startsWith('/cabinet')
+      ? NextResponse.redirect(new URL('/authentication', request.nextUrl))
+      : NextResponse.next({
+          request: { headers },
+        });
+
+    response.cookies.delete('accessToken');
+    response.cookies.delete('refreshToken');
+
+    return response;
   }
   const setCookieHeader = refreshResponse.headers['set-cookie'];
   const parsedCookies = setCookieHeader ? parse(setCookieHeader) : ([] as any[]);
