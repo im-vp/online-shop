@@ -1,12 +1,16 @@
 import { FC } from 'react';
 
-import OrderResult from '@/components/pages/OrderResult/OrderResult';
+import dynamic from 'next/dynamic';
 
-export const dynamic = 'force-dynamic';
+const ClientOrderResult = dynamic(() => import('@/components/pages/OrderResult/OrderResult'), {
+  ssr: false,
+  loading: () => <h1 className="page__title">Загрузка...</h1>,
+});
+
 interface Props {}
 
 const OrderResultPage: FC<Props> = ({}) => {
-  return <OrderResult />;
+  return <ClientOrderResult />;
 };
 
 export default OrderResultPage;
