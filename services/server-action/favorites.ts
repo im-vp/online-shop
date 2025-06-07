@@ -3,43 +3,123 @@
 import { revalidatePath } from 'next/cache';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import FavoritesModel from '@/models/favoritesModel';
 import ProductModel from '@/models/productModel';
 import { getUserIdByTokenFromCookie } from '@/services/server-action/actions';
-import { IProduct } from '@/types/types';
+import { IApiResponse, IProduct } from '@/types/types';
 
 export const getUserFavoritesIds = async () => {
-  const userId = await getUserIdByTokenFromCookie();
+  try {
+    const userId = await getUserIdByTokenFromCookie();
 
-  if (!userId) return null;
+    if (!userId)
+      return {
+        success: false,
+        data: null,
+        message: 'Пользователь не авторизован',
+      };
 
-  const userFavorites = await getFavoritesByUserId(userId);
+    const { success, data: userFavorites } = await getFavoritesByUserId(userId);
 
-  return userFavorites;
+    if (!success || !userFavorites)
+      return {
+        success: false,
+        data: null,
+        message: 'Избранное пустое',
+      };
+
+    return {
+      success: true,
+      data: userFavorites,
+      message: 'Избранное получено',
+    };
+  } catch (error) {
+    const result = serverErrorHandler(error);
+
+    return {
+      success: result.success,
+      data: result.data,
+      message: result.message,
+      status: result.status,
+    };
+  }
 };
 
-export const getUserFavoritesProducts = async (): Promise<IProduct[] | null> => {
-  const userId = await getUserIdByTokenFromCookie();
+export const getUserFavoritesProducts = async (): Promise<IApiResponse<IProduct[]>> => {
+  try {
+    const userId = await getUserIdByTokenFromCookie();
 
-  if (!userId) return null;
+    if (!userId)
+      return {
+        success: false,
+        data: null,
+        message: 'Пользователь не авторизован',
+      };
 
-  const userFavorites = await getFavoritesByUserId(userId);
+    const { success, data: userFavorites } = await getFavoritesByUserId(userId);
 
-  if (!userFavorites) return null;
+    if (!success || !userFavorites)
+      return {
+        success: false,
+        data: null,
+        message: 'Избранное пустое',
+      };
 
-  const products = await ProductModel.find({ _id: { $in: userFavorites } });
+    const products = await ProductModel.find({ _id: { $in: userFavorites } });
 
-  if (!products) return null;
+    if (!products)
+      return {
+        success: false,
+        data: null,
+        message: 'Товары не найдены',
+      };
 
-  return products;
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(products)),
+      message: 'Товары получены',
+    };
+  } catch (error) {
+    const result = serverErrorHandler(error);
+
+    return {
+      success: result.success,
+      data: result.data,
+      message: result.message,
+      status: result.status,
+    };
+  }
 };
 
 export const getFavoritesByUserId = async (userId: string) => {
-  await connectMongoDB();
-  const userFavorites = await FavoritesModel.findOne({ user: userId });
+  try {
+    await connectMongoDB();
+    const userFavorites = await FavoritesModel.findOne({ user: userId });
 
-  return userFavorites ? userFavorites.favorites : null;
+    if (!userFavorites)
+      return {
+        success: true,
+        data: null,
+        message: 'Избранное пустое',
+      };
+
+    return {
+      success: true,
+      data: JSON.parse(JSON.stringify(userFavorites.favorites)) as string[],
+      message: 'Избранное получено',
+    };
+  } catch (error) {
+    const result = serverErrorHandler(error);
+
+    return {
+      success: result.success,
+      data: result.data,
+      message: result.message,
+      status: result.status,
+    };
+  }
 };
 
 export const toggleFavorite = async (productId: string) => {

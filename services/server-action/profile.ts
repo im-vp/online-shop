@@ -34,9 +34,11 @@ export const fetchInitialUserData = async () => {
     let myFavorites = null;
 
     if (isAuth) {
-      myFavorites = await getUserFavoritesIds();
+      const { success, data } = await getUserFavoritesIds();
+
+      if (success && data) myFavorites = data;
     }
-    return { isAuth, myFavorites };
+    return { isAuth, myFavorites: myFavorites };
   } catch (error) {
     const result = serverErrorHandler(error);
 

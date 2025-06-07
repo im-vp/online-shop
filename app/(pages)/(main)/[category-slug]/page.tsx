@@ -40,7 +40,7 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
   }
   const filterParams = getObjectFilterParams(searchParams);
 
-  const favorites = await getUserFavoritesIds();
+  const { data: favorites } = await getUserFavoritesIds();
 
   return (
     <>

@@ -15,7 +15,7 @@ import { ICategories, IFilterParams, IProduct } from '@/types/types';
 interface Props {
   products: IProduct[];
   productsQuantity: number;
-  favorites?: string[] | null;
+  favorites: string[] | null;
   category: ICategories;
   filterParams: IFilterParams;
 }
