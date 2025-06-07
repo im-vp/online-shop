@@ -162,6 +162,7 @@ export interface IHeaderData {
   isAuth: boolean;
   myFavorites: string[] | null;
   cartQuantity: number;
+  categoriesInfo: ICategoriesResponse;
 }
 
 export interface IHomeProductsParams {

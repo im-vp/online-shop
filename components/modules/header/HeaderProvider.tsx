@@ -8,6 +8,7 @@ export const UserContext = createContext<IHeaderData>({
   isAuth: false,
   myFavorites: null,
   cartQuantity: 0,
+  categoriesInfo: { categories: [], categoriesQuantity: 0 },
 });
 
 interface Props {

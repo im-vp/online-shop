@@ -2,22 +2,18 @@
 
 import { FC, useEffect, useState } from 'react';
 
-import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import HeaderCartButton from '@/components/modules/header/HeaderCartButton';
+import HeaderCategories from '@/components/modules/header/HeaderCategories';
 import ProfileBlock from '@/components/modules/header/ProfileBlock';
 import { Search } from '@/components/modules/header/Search';
 
 import { isCurrentUrlMatch } from '@/lib/utils/utils';
 
-import { ICategories } from '@/types/types';
+interface Props {}
 
-interface Props {
-  categories: ICategories[];
-}
-
-const HeaderBottom: FC<Props> = ({ categories }) => {
+const HeaderBottom: FC<Props> = () => {
   const path = usePathname();
   const [activeButton, setActiveButton] = useState(false);
   const [showOverlay, setShowOverlay] = useState(false);
@@ -65,16 +61,7 @@ const HeaderBottom: FC<Props> = ({ categories }) => {
           }}
         ></div>
       )}
-
-      {activeButton && (
-        <div className="header__categories-popup smoothly-down box-shadow-white">
-          {categories.map((el) => (
-            <div key={el._id} className="header__categories-popup-item">
-              <Link href={`/${el.slug}`}>{el.name}</Link>
-            </div>
-          ))}
-        </div>
-      )}
+      {activeButton && <HeaderCategories />}
     </div>
   );
 };

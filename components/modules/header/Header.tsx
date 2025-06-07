@@ -9,11 +9,11 @@ import { getStaticData } from '@/services/server-action/header';
 import { fetchInitialUserData } from '@/services/server-action/profile';
 
 const Header = async () => {
-  const { categories, cartQuantity } = await getStaticData();
+  const { categoriesInfo, cartQuantity } = await getStaticData();
   const { isAuth, myFavorites } = await fetchInitialUserData();
 
   return (
-    <HeaderProvider value={{ isAuth, myFavorites, cartQuantity }}>
+    <HeaderProvider value={{ isAuth, myFavorites, categoriesInfo, cartQuantity }}>
       <header className="header">
         <div className="container header__container">
           <div className="header__top">
@@ -23,7 +23,7 @@ const Header = async () => {
               </Link>
             </div>
           </div>
-          <HeaderBottom categories={categories} />
+          <HeaderBottom />
         </div>
       </header>
     </HeaderProvider>
