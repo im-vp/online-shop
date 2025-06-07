@@ -2,14 +2,14 @@
 
 import { serverErrorHandler } from '@/lib/utils/utils';
 
-import { getCategories } from '@/services/api/categories';
 import { getCartQuantity } from '@/services/server-action/actions';
+import { getAllCategories } from '@/services/server-action/categories';
 import { ICategoriesResponse } from '@/types/types';
 
 export const getStaticData = async () => {
   try {
     const [categoriesResponse, cartQuantity] = await Promise.all([
-      getCategories(),
+      getAllCategories(),
       getCartQuantity(),
     ]);
 
