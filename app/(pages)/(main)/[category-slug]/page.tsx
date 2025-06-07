@@ -3,23 +3,21 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/modules/breadcrumbs/Breadcrumbs';
 import { Category } from '@/components/pages/Category/Category';
 
-import { getObjectFilterParams, getStringFilterParams } from '@/lib/utils/utils';
+import { getObjectFilterParams } from '@/lib/utils/utils';
 
-import { getProducts } from '@/services/api/products';
 import { getUserFavoritesIds } from '@/services/server-action/favorites';
+import { getCategoryProducts } from '@/services/server-action/products';
 
 interface Props {
   params: { 'category-slug': string };
   searchParams: { [key: string]: string };
 }
 
-export const dynamic = 'force-dynamic';
-
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params, searchParams }: Props) {
   const categoryName = params['category-slug'];
-  const { data } = await getProducts(categoryName);
+  const { success, data } = await getCategoryProducts(categoryName, searchParams);
 
-  if (data && data.productsQuantity > 1) {
+  if (success && data && data.productsQuantity > 1) {
     return {
       title: data.products[0].category.name,
       description: `Купить ${categoryName} в интернет магазине 'Online Shop'`,
@@ -34,13 +32,14 @@ export async function generateMetadata({ params }: Props) {
 
 const CategoryPage = async ({ params, searchParams }: Props) => {
   const categoryName = params['category-slug'];
-  const filterParams = getObjectFilterParams(searchParams);
 
-  const { success, data } = await getProducts(categoryName, getStringFilterParams(searchParams));
+  const { success, data } = await getCategoryProducts(categoryName, searchParams);
 
   if (!success || !data) {
     return notFound();
   }
+  const filterParams = getObjectFilterParams(searchParams);
+
   const favorites = await getUserFavoritesIds();
 
   return (

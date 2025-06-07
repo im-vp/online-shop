@@ -187,8 +187,8 @@ export const getObjectFilterParams = (searchParams: { [key: string]: string }) =
         const rangeMin = searchParams[key].split('-')[0];
         const rangeMax = searchParams[key].split('-')[1];
         filterParams.range = {
-          min: Number(rangeMin),
-          max: Number(rangeMax),
+          min: !isNaN(Number(rangeMin)) ? Number(rangeMin) : 0,
+          max: !isNaN(Number(rangeMax)) ? Number(rangeMax) : 0,
         };
         break;
       default:
