@@ -59,7 +59,18 @@ export async function middleware(request: NextRequest) {
   }
   const setCookieHeader = refreshResponse.headers['set-cookie'];
   const parsedCookies = setCookieHeader ? parse(setCookieHeader) : ([] as any[]);
-  const response = NextResponse.redirect(new URL(request.nextUrl.pathname, request.url));
+
+  for (const cookie of parsedCookies) {
+    if (cookie.name === 'accessToken' || cookie.name === 'refreshToken') {
+      request.cookies.set(cookie.name, cookie.value);
+    }
+  }
+
+  const response = NextResponse.next({
+    request: {
+      headers: new Headers(request.headers),
+    },
+  });
 
   for (const cookie of parsedCookies) {
     if (cookie.name === 'accessToken' || cookie.name === 'refreshToken') {
