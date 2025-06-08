@@ -23,6 +23,10 @@ export const useAddToCart = () => {
     setIdProduct(id);
   };
 
+  const openCartHandler = () => {
+    togglePopup(POPUP_ID.cart);
+  };
+
   useEffect(() => {
     if (isLoadingStatus === 'success') {
       togglePopup(POPUP_ID.cart);
@@ -41,5 +45,6 @@ export const useAddToCart = () => {
     isLoadingProductId,
     isLoadingStatus,
     addToCartHandler,
+    openCartHandler,
   };
 };
