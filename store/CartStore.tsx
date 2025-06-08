@@ -7,12 +7,15 @@ import { getCartTotalPrice, getCartTotalQuantity } from '@/lib/utils/utils';
 import { CartApi } from '@/services/api/cart';
 import { CartRequestBody, IApiResponse, ICartProduct, ICartResponse } from '@/types/types';
 
-interface CartState {
+interface CartProperties {
   products: ICartProduct[];
   totalQuantity: number;
   totalSum: number;
   isLoadingStatus: 'loading' | 'success' | 'initial';
   isLoadingProductId: string;
+}
+
+export interface CartState extends CartProperties {
   isProductInCart: (id: string) => boolean;
   openCart: () => void;
   addToCart: (_id: string) => void;
@@ -29,145 +32,151 @@ interface CartState {
   }: CartRequestBody) => Promise<IApiResponse<ICartResponse | null>>;
 }
 
-export const useCartStore = create<CartState>()(
-  devtools((set, get) => ({
-    products: [],
-    totalQuantity: 0,
-    totalSum: 0,
-    isLoadingStatus: 'initial',
-    isLoadingProductId: '',
-    fetchGetCartData: debounce(async ({ action, productId, value }) => {
-      set({
-        isLoadingStatus: 'loading',
-        isLoadingProductId: productId || '',
-      });
+const initialState: CartProperties = {
+  products: [],
+  totalQuantity: 0,
+  totalSum: 0,
+  isLoadingStatus: 'initial',
+  isLoadingProductId: '',
+};
 
-      const { success, data } = await CartApi.getCart({
-        action,
-        productId: productId || '',
-        value,
-      });
-
-      let returnData = null;
-      if (success && data?.products.length) {
+export const createCartStore = (initProps: Partial<CartProperties>) =>
+  create<CartState>()(
+    devtools((set, get) => ({
+      ...initialState,
+      ...initProps,
+      fetchGetCartData: debounce(async ({ action, productId, value }) => {
         set({
-          products: data.products,
-          totalQuantity: data.totalQuantity,
-          totalSum: data.totalSum,
+          isLoadingStatus: 'loading',
+          isLoadingProductId: productId || '',
         });
 
-        returnData = {
-          products: data.products,
-          totalQuantity: data.totalQuantity,
-          totalSum: data.totalSum,
-        };
-      }
-      set({
-        isLoadingStatus: 'success',
-        isLoadingProductId: '',
-      });
-      setTimeout(() => {
+        const { success, data } = await CartApi.getCart({
+          action,
+          productId: productId || '',
+          value,
+        });
+
+        let returnData = null;
+        if (success && data?.products.length) {
+          set({
+            products: data.products,
+            totalQuantity: data.totalQuantity,
+            totalSum: data.totalSum,
+          });
+
+          returnData = {
+            products: data.products,
+            totalQuantity: data.totalQuantity,
+            totalSum: data.totalSum,
+          };
+        }
         set({
-          isLoadingStatus: 'initial',
+          isLoadingStatus: 'success',
           isLoadingProductId: '',
         });
-      }, 10);
+        setTimeout(() => {
+          set({
+            isLoadingStatus: 'initial',
+            isLoadingProductId: '',
+          });
+        }, 10);
 
-      return returnData;
-    }, 500) as unknown as CartState['fetchGetCartData'],
+        return returnData;
+      }, 500) as unknown as CartState['fetchGetCartData'],
 
-    isProductInCart: (id) => {
-      return get().products.some((product) => product._id === id);
-    },
-    setTotalQuantity: (quantity) => {
-      set({
-        totalQuantity: quantity,
-      });
-    },
-    calculateTotal: () =>
-      set((state) => {
-        const totalSum = getCartTotalPrice(state.products);
-        const totalQuantity = getCartTotalQuantity(state.products);
-
-        return {
-          totalSum,
-          totalQuantity,
-        };
-      }),
-    plusOne: (id) => {
-      set((state) => {
-        const updatedProducts = state.products.map((product) => {
-          if (product._id === id) {
-            return {
-              ...product,
-              quantity: product.quantity + 1,
-              totalPrice: product.totalPrice + product.price,
-            };
-          }
-          return product;
+      isProductInCart: (id) => {
+        return get().products.some((product) => product._id === id);
+      },
+      setTotalQuantity: (quantity) => {
+        set({
+          totalQuantity: quantity,
         });
+      },
+      calculateTotal: () =>
+        set((state) => {
+          const totalSum = getCartTotalPrice(state.products);
+          const totalQuantity = getCartTotalQuantity(state.products);
 
-        return {
-          products: updatedProducts,
-        };
-      });
-      get().calculateTotal();
-      get().fetchGetCartData({
-        action: 'quantity',
-        productId: id,
-        value: get().products.find((product) => product._id === id)?.quantity,
-      });
-    },
-    minusOne: (id) => {
-      set((state) => {
-        const updatedProducts = state.products.map((product) => {
-          if (product._id === id) {
-            return {
-              ...product,
-              quantity: product.quantity - 1,
-              totalPrice: product.totalPrice - product.price,
-            };
-          }
-          return product;
+          return {
+            totalSum,
+            totalQuantity,
+          };
+        }),
+      plusOne: (id) => {
+        set((state) => {
+          const updatedProducts = state.products.map((product) => {
+            if (product._id === id) {
+              return {
+                ...product,
+                quantity: product.quantity + 1,
+                totalPrice: product.totalPrice + product.price,
+              };
+            }
+            return product;
+          });
+
+          return {
+            products: updatedProducts,
+          };
         });
+        get().calculateTotal();
+        get().fetchGetCartData({
+          action: 'quantity',
+          productId: id,
+          value: get().products.find((product) => product._id === id)?.quantity,
+        });
+      },
+      minusOne: (id) => {
+        set((state) => {
+          const updatedProducts = state.products.map((product) => {
+            if (product._id === id) {
+              return {
+                ...product,
+                quantity: product.quantity - 1,
+                totalPrice: product.totalPrice - product.price,
+              };
+            }
+            return product;
+          });
 
-        return {
-          products: updatedProducts,
-        };
-      });
-      get().calculateTotal();
-      get().fetchGetCartData({
-        action: 'quantity',
-        productId: id,
-        value: get().products.find((product) => product._id === id)?.quantity,
-      });
-    },
-    addToCart: (_id) => get().fetchGetCartData({ action: 'add', productId: _id }),
-    cleanCart: () => {
-      set({
-        products: [],
-        totalQuantity: 0,
-        totalSum: 0,
-      });
-    },
-    openCart: () =>
-      get().fetchGetCartData({
-        action: 'open',
-      }),
-    removeFromCart: (id) => {
-      const inCart = get().isProductInCart(id);
+          return {
+            products: updatedProducts,
+          };
+        });
+        get().calculateTotal();
+        get().fetchGetCartData({
+          action: 'quantity',
+          productId: id,
+          value: get().products.find((product) => product._id === id)?.quantity,
+        });
+      },
+      addToCart: (_id) => get().fetchGetCartData({ action: 'add', productId: _id }),
+      cleanCart: () => {
+        set({
+          products: [],
+          totalQuantity: 0,
+          totalSum: 0,
+        });
+      },
+      openCart: () =>
+        get().fetchGetCartData({
+          action: 'open',
+        }),
+      removeFromCart: (id) => {
+        const inCart = get().isProductInCart(id);
 
-      if (!inCart) return;
+        if (!inCart) return;
 
-      const products = get().products.filter((product) => product._id !== id);
+        const products = get().products.filter((product) => product._id !== id);
 
-      set({ products });
+        set({ products });
 
-      get().calculateTotal();
-      get().fetchGetCartData({
-        action: 'remove',
-        productId: id,
-      });
-    },
-  })),
-);
+        get().calculateTotal();
+        get().fetchGetCartData({
+          action: 'remove',
+          productId: id,
+        });
+      },
+    })),
+  );

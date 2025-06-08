@@ -1,13 +1,13 @@
-import { FC, useContext } from 'react';
+import { FC } from 'react';
 
 import Link from 'next/link';
 
-import { UserContext } from '@/components/modules/header/HeaderProvider';
+import { useInitDataContext } from '@/hooks/store/useStore';
 
 interface Props {}
 
 const HeaderCategories: FC<Props> = ({}) => {
-  const { categoriesInfo } = useContext(UserContext);
+  const { categoriesInfo } = useInitDataContext();
 
   if (!categoriesInfo.categories.length) return null;
 

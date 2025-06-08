@@ -7,8 +7,8 @@ import { useRouter } from 'next/navigation';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { POPUP_ID } from '@/constants/constants';
+import { useFavoritesStore } from '@/hooks/store/useStore';
 import { toggleFavorite } from '@/services/server-action/favorites';
-import { useFavoritesStore } from '@/store/FavoritesStore';
 import style from '@/styles/favoriteButton.module.css';
 
 interface Props {

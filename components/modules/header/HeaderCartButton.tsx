@@ -1,34 +1,15 @@
-import { FC, useContext, useEffect, useState } from 'react';
-
-import { UserContext } from '@/components/modules/header/HeaderProvider';
+import { FC, useEffect } from 'react';
 
 import { POPUP_ID } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
+import { useCartStore } from '@/hooks/store/useStore';
 import { usePopupStore } from '@/store/PopupStore';
 
 interface Props {}
 
 const HeaderCartButton: FC<Props> = ({}) => {
-  const { cartQuantity } = useContext(UserContext);
-  const [totalQuantity, setTotalQuantity] = useState(cartQuantity);
- 
-  const {
-    products,
-    totalQuantity: totalQuantityState,
-    isLoadingStatus,
-    openCart,
-    setTotalQuantity: setTotalQuantityState,
-  } = useCartStore((state) => state);
+  const { products, totalQuantity, isLoadingStatus, openCart } = useCartStore((state) => state);
 
   const togglePopup = usePopupStore((state) => state.togglePopup);
-
-  useEffect(() => {
-    setTotalQuantityState(cartQuantity);
-  }, []);
-
-  useEffect(() => {
-    setTotalQuantity(totalQuantityState);
-  }, [totalQuantityState]);
 
   useEffect(() => {
     isLoadingStatus === 'success' && togglePopup(POPUP_ID.cart);

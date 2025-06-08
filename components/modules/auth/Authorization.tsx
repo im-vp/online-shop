@@ -9,8 +9,9 @@ import { useForm } from 'react-hook-form';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { AUTH_FORM_TYPE, POPUP_ID } from '@/constants/constants';
+import { useFavoritesStore, useUserStore } from '@/hooks/store/useStore';
 import { userLogin } from '@/services/api/user';
-import { loginCheck } from '@/services/server-action/actions';
+import { getUserFavoritesIds } from '@/services/server-action/favorites';
 import { usePopupStore } from '@/store/PopupStore';
 import { IAuthorizationBody, TypeForm } from '@/types/auth-types';
 
@@ -19,6 +20,8 @@ interface Props {
 }
 
 const Authorization: FC<Props> = ({ onClick }) => {
+  const setAuthStatus = useUserStore((state) => state.setAuthStatus);
+  const addAllFavorites = useFavoritesStore((state) => state.addAllFavorites);
   const {
     handleSubmit,
     register,
@@ -42,12 +45,12 @@ const Authorization: FC<Props> = ({ onClick }) => {
     if (success) {
       if (activePopup === POPUP_ID.authentication) {
         togglePopup(null);
-        setTimeout(() => {
-          router.refresh();
-        }, 200);
       } else {
         router.push('/');
       }
+      setAuthStatus(true);
+      const { success, data } = await getUserFavoritesIds();
+      if (success && data) addAllFavorites(data);
     }
   });
   return (

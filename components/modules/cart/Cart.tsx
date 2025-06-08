@@ -7,14 +7,14 @@ import { useRouter } from 'next/navigation';
 import Price from '@/components/elements/Price';
 import Quantity from '@/components/elements/Quantity';
 
-import { useCartStore } from '@/store/CartStore';
+import { useCartStore } from '@/hooks/store/useStore';
 import '@/styles/cart/cart.css';
 
 const Cart: FC = () => {
-  const { products, totalQuantity, totalSum } = useCartStore((state) => state);
-  const plusOne = useCartStore((store) => store.plusOne);
-  const minusOne = useCartStore((store) => store.minusOne);
-  const removeProduct = useCartStore((store) => store.removeFromCart);
+  const { products, totalQuantity, totalSum, plusOne, minusOne, removeFromCart } = useCartStore(
+    (state) => state,
+  );
+
   const router = useRouter();
 
   if (!totalQuantity) return <EmptyCart />;
@@ -39,7 +39,7 @@ const Cart: FC = () => {
                   type="button"
                   title="Удалить из корзины"
                   className="cart__item-close"
-                  onClick={() => removeProduct(product._id)}
+                  onClick={() => removeFromCart(product._id)}
                 ></button>
               </div>
               <div className="cart__item-actions">

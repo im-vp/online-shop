@@ -1,14 +1,23 @@
 import { create } from 'zustand';
 import { devtools } from 'zustand/middleware';
 
-interface UserState {
-  isAuth: Promise<boolean> | boolean;
+interface UserProperties {
+  isAuth: boolean;
+}
+
+export interface UserState extends UserProperties {
   setAuthStatus: (val: boolean) => void;
 }
 
-export const useUserStore = create<UserState>()(
-  devtools((set) => ({
-    isAuth: false,
-    setAuthStatus: (status) => set(() => ({ isAuth: status })),
-  })),
-);
+const initialState: UserProperties = {
+  isAuth: false,
+};
+
+export const createUserStore = (initProps: Partial<UserProperties>) =>
+  create<UserState>()(
+    devtools((set) => ({
+      ...initialState,
+      ...initProps,
+      setAuthStatus: (status) => set(() => ({ isAuth: status })),
+    })),
+  );

@@ -5,8 +5,11 @@ import '@/app/global-style/globals.css';
 import '@/app/global-style/header.css';
 
 import { ReactQueryProvider } from '@/components/ReactQueryProvider';
+import RootInitProvider from '@/components/modules/providers/RootInitProvider';
 
 import { siteMetadata } from '@/seoConfig';
+import { getStaticData } from '@/services/server-action/header';
+import { fetchInitialUserData } from '@/services/server-action/profile';
 
 const montserratAlternates = Montserrat_Alternates({
   subsets: ['cyrillic'],
@@ -24,16 +27,21 @@ export const metadata: Metadata = {
   keywords: siteMetadata.main.keywords,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { categoriesInfo, cartQuantity } = await getStaticData();
+  const { isAuth, myFavorites } = await fetchInitialUserData();
+  
   return (
     <ReactQueryProvider>
-      <html lang="ru">
-        <body className={montserratAlternates.variable}>{children}</body>
-      </html>
+      <RootInitProvider value={{ isAuth, myFavorites, cartQuantity, categoriesInfo }}>
+        <html lang="ru">
+          <body className={montserratAlternates.variable}>{children}</body>
+        </html>
+      </RootInitProvider>
     </ReactQueryProvider>
   );
 }

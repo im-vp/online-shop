@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 
 import { POPUP_ID } from '@/constants/constants';
-import { useCartStore } from '@/store/CartStore';
+import { useCartStore } from '@/hooks/store/useStore';
 import { usePopupStore } from '@/store/PopupStore';
 
 export const useAddToCart = () => {

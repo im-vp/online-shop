@@ -13,8 +13,8 @@ import Spinner from '@/components/ui/spinner/Spinner';
 
 import { phoneMaskFormat } from '@/lib/utils/utils';
 
+import { useCartStore } from '@/hooks/store/useStore';
 import { OrdersApi } from '@/services/api/orders';
-import { useCartStore } from '@/store/CartStore';
 import '@/styles/checkout-page/checkout-page.css';
 import { CheckoutFormValues, ICart, OrderCreateApi } from '@/types/types';
 import { IUser } from '@/types/user-types';

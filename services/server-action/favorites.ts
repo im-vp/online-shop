@@ -1,7 +1,5 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-
 import { connectMongoDB } from '@/lib/mongodb';
 import { serverErrorHandler } from '@/lib/utils/utils';
 
@@ -131,7 +129,6 @@ export const toggleFavorite = async (productId: string) => {
       return { success: false, data: { isAuth: false }, message: 'Пользователь не авторизован' };
 
     let message = 'Добавлено в избранное';
-    revalidatePath('/cabinet/favorites');
 
     const userFavorites = await FavoritesModel.findOne({ user: userId });
     if (!userFavorites) {
