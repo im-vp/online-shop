@@ -2,13 +2,12 @@ import { FC } from 'react';
 
 import Link from 'next/link';
 
-import { useFavoritesStore, useUserStore } from '@/hooks/store/useStore';
+import { useUserStore } from '@/hooks/store/useStore';
 
 interface Props {}
 
 const ProfileBlock: FC<Props> = () => {
-  const isAuth = useUserStore((state) => state.isAuth);
-  const favorites = useFavoritesStore((state) => state.favorites);
+  const { isAuth, userFavorites } = useUserStore((state) => state);
 
   return (
     <>
@@ -16,8 +15,8 @@ const ProfileBlock: FC<Props> = () => {
         <>
           <Link
             href="/cabinet/favorites"
-            title={`${favorites.length ? 'У Вас есть товары в избранном' : 'Избранное'}`}
-            className={`header__button icon-container header__button--favorites ${favorites.length ? 'header__button--favorites--active' : ''}`}
+            title={`${userFavorites.length ? 'У Вас есть товары в избранном' : 'Избранное'}`}
+            className={`header__button icon-container header__button--favorites ${userFavorites.length ? 'header__button--favorites--active' : ''}`}
           ></Link>
           <Link
             href="/cabinet/orders"

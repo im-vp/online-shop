@@ -4,14 +4,13 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { CABINET_MENU_LIST } from '@/constants/constants';
-import { useFavoritesStore, useUserStore } from '@/hooks/store/useStore';
+import { useUserStore } from '@/hooks/store/useStore';
 import { UserApi } from '@/services/api/user';
 
 const CabinetMenu = () => {
   const path = usePathname();
   const router = useRouter();
-  const setAuthStatus = useUserStore((state) => state.setAuthStatus);
-  const addAllFavorites = useFavoritesStore((state) => state.addAllFavorites);
+  const { setAuthStatus, addUserFavorites } = useUserStore((state) => state);
 
   const handlerLogout = async () => {
     const { success } = await UserApi.logout();
@@ -19,7 +18,7 @@ const CabinetMenu = () => {
     if (success) {
       router.push('/');
       setAuthStatus(false);
-      addAllFavorites([]);
+      addUserFavorites([]);
     }
   };
 

@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { POPUP_ID } from '@/constants/constants';
-import { useFavoritesStore } from '@/hooks/store/useStore';
+import { useUserStore } from '@/hooks/store/useStore';
 import { toggleFavorite } from '@/services/server-action/favorites';
 import style from '@/styles/favoriteButton.module.css';
 
@@ -22,7 +22,7 @@ const FavoritesButton: FC<Props> = ({ productId, favorites = [] }) => {
   const [isFavorites, setIsFavorites] = useState(
     (favorites && favorites.includes(productId)) || false,
   );
-  const { addFavorite, favorites: favoritesStore } = useFavoritesStore((state) => state);
+  const { addUserFavorites, userFavorites } = useUserStore((state) => state);
   const [spinner, setSpinner] = useState(false);
 
   const handleFavorites = async (productId: string) => {
@@ -33,14 +33,14 @@ const FavoritesButton: FC<Props> = ({ productId, favorites = [] }) => {
       pathname.push(`/${POPUP_ID.authentication}`);
     } else {
       setIsFavorites((prev) => !prev);
-      addFavorite(productId);
+      addUserFavorites(productId);
     }
     setSpinner(false);
   };
 
   useEffect(() => {
-    setIsFavorites(favoritesStore.includes(productId) || false);
-  }, [favoritesStore]);
+    setIsFavorites(userFavorites.includes(productId) || false);
+  }, [userFavorites]);
 
   return (
     <>
