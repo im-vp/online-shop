@@ -22,7 +22,7 @@ interface Props {
 }
 
 const Product: FC<Props> = ({ product, profile, reviews }) => {
-  const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
+  const { addToCartHandler, isLoading } = useAddToCart(product._id);
 
   return (
     <div className="product-page">
@@ -49,7 +49,7 @@ const Product: FC<Props> = ({ product, profile, reviews }) => {
           <div className="product-page__description">{product.description}</div>
           <div className="product-page__buy-block">
             <Price price={product.price} className="product-page__price" />
-            {isAddToCartButtonLoading ? (
+            {isLoading ? (
               <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCartWithText} />
             ) : (
               <CartButton

@@ -34,7 +34,7 @@ export const ProductItem: FC<IProduct & Props> = ({
   rating,
   favorites = [],
 }) => {
-  const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
+  const { addToCartHandler, isLoading } = useAddToCart(_id);
 
   return (
     <article className={`${style.product} ${className}`}>
@@ -49,7 +49,7 @@ export const ProductItem: FC<IProduct & Props> = ({
 
       <div className={style.product__price}>
         <Price price={price} />
-        {isAddToCartButtonLoading ? (
+        {isLoading ? (
           <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCart} />
         ) : (
           <CartButton

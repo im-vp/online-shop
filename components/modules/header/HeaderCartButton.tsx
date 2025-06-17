@@ -8,10 +8,10 @@ import { useAddToCart } from '@/hooks/useAddToCart';
 interface Props {}
 
 const HeaderCartButton: FC<Props> = ({}) => {
-  const { products, totalQuantity, openCart } = useCartStore((state) => state);
-  const { isCartLoading, openCartHandler } = useAddToCart();
+  const totalQuantity = useCartStore((state) => state.totalQuantity);
+  const { isLoading, openCartHandler } = useAddToCart();
 
-  if (isCartLoading)
+  if (isLoading)
     return (
       <Spinner
         css={{
@@ -28,9 +28,7 @@ const HeaderCartButton: FC<Props> = ({}) => {
       type="button"
       title="Корзина"
       className="header__button icon-container header__button--cart"
-      onClick={() => {
-        products.length ? openCartHandler() : openCart();
-      }}
+      onClick={openCartHandler}
     >
       {totalQuantity > 0 && <span className="header__button--cart-count">{totalQuantity}</span>}
     </button>

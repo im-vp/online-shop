@@ -1,49 +1,37 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 
 import { POPUP_ID } from '@/constants/constants';
 import { useCartStore } from '@/hooks/store/useStore';
 import { usePopupStore } from '@/store/PopupStore';
 
-export const useAddToCart = () => {
-  const { isLoadingStatus, isLoadingProductId, addToCart } = useCartStore((state) => state);
+export const useAddToCart = (productId: string = 'cart') => {
+  const isLoadingProduct = useCartStore((state) => state.loadingProductIdMap[productId] ?? false),
+    addToCart = useCartStore((state) => state.addToCart),
+    openCart = useCartStore((state) => state.openCart),
+    hasProducts = useCartStore((state) => state.products.length > 0);
 
-  const [idProduct, setIdProduct] = useState('');
-
-  const [isCartLoading, setCartLoading] = useState(isLoadingStatus === 'loading');
-  const [isAddToCartButtonLoading, setAddToCartButtonLoading] = useState(
-    isLoadingStatus === 'loading' && isLoadingProductId.length && isLoadingProductId === idProduct,
-  );
+  const isLoading = isLoadingProduct === 'loading';
 
   const togglePopup = usePopupStore((state) => state.togglePopup);
 
   const addToCartHandler = (id: string) => {
     addToCart(id);
-    setIdProduct(id);
   };
 
   const openCartHandler = () => {
-    togglePopup(POPUP_ID.cart);
+    hasProducts ? togglePopup(POPUP_ID.cart) : openCart();
   };
 
   useEffect(() => {
-    if (isLoadingStatus === 'success') {
+    if (isLoadingProduct === 'success') {
       togglePopup(POPUP_ID.cart);
     }
-    setCartLoading(isLoadingStatus === 'loading');
-    setAddToCartButtonLoading(
-      isLoadingStatus === 'loading' &&
-        isLoadingProductId.length &&
-        isLoadingProductId === idProduct,
-    );
-  }, [isLoadingStatus, isLoadingProductId]);
+  }, [isLoadingProduct]);
 
   return {
-    isCartLoading,
-    isAddToCartButtonLoading,
-    isLoadingProductId,
-    isLoadingStatus,
+    isLoading,
     addToCartHandler,
     openCartHandler,
   };

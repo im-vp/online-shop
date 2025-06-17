@@ -20,7 +20,7 @@ interface Props {
 
 const FavoritesItem: FC<Props> = ({ product }) => {
   const { _id, images, path, name, price } = product;
-  const { addToCartHandler, isAddToCartButtonLoading } = useAddToCart();
+  const { addToCartHandler, isLoading } = useAddToCart(_id);
 
   return (
     <li className="favorites-item" key={_id}>
@@ -33,7 +33,7 @@ const FavoritesItem: FC<Props> = ({ product }) => {
         </Link>
         <Price className="favorites-item__price" price={price} />
         <div className="favorites-item__buttons">
-          {isAddToCartButtonLoading ? (
+          {isLoading ? (
             <Spinner color="#FFFFFF" css={SPINNER_STYLE.buttonAddCartWithText} />
           ) : (
             <CartButton

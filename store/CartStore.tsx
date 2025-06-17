@@ -11,8 +11,7 @@ interface CartProperties {
   products: ICartProduct[];
   totalQuantity: number;
   totalSum: number;
-  isLoadingStatus: 'loading' | 'success' | 'initial';
-  isLoadingProductId: string;
+  loadingProductIdMap: Record<string, 'loading' | 'success' | 'initial'>;
 }
 
 export interface CartState extends CartProperties {
@@ -36,8 +35,7 @@ const initialState: CartProperties = {
   products: [],
   totalQuantity: 0,
   totalSum: 0,
-  isLoadingStatus: 'initial',
-  isLoadingProductId: '',
+  loadingProductIdMap: {},
 };
 
 export const createCartStore = (initProps: Partial<CartProperties>) =>
@@ -46,14 +44,13 @@ export const createCartStore = (initProps: Partial<CartProperties>) =>
       ...initialState,
       ...initProps,
       fetchGetCartData: debounce(async ({ action, productId, value }) => {
-        set({
-          isLoadingStatus: 'loading',
-          isLoadingProductId: productId || '',
-        });
+        set((state) => ({
+          loadingProductIdMap: { ...state.loadingProductIdMap, [productId]: 'loading' },
+        }));
 
         const { success, data } = await CartApi.getCart({
           action,
-          productId: productId || '',
+          productId: !productId || productId === 'cart' ? null : productId,
           value,
         });
 
@@ -63,6 +60,7 @@ export const createCartStore = (initProps: Partial<CartProperties>) =>
             products: data.products,
             totalQuantity: data.totalQuantity,
             totalSum: data.totalSum,
+            loadingProductIdMap: { ...get().loadingProductIdMap, [productId]: 'success' },
           });
 
           returnData = {
@@ -70,17 +68,26 @@ export const createCartStore = (initProps: Partial<CartProperties>) =>
             totalQuantity: data.totalQuantity,
             totalSum: data.totalSum,
           };
-        }
-        set({
-          isLoadingStatus: 'success',
-          isLoadingProductId: '',
-        });
-        setTimeout(() => {
+        } else {
           set({
-            isLoadingStatus: 'initial',
-            isLoadingProductId: '',
+            loadingProductIdMap: { ...get().loadingProductIdMap, [productId]: 'success' },
           });
-        }, 10);
+        }
+
+        setTimeout(() => {
+          set((state) => {
+            const newLoadingMap = {
+              ...state.loadingProductIdMap,
+            };
+
+            delete newLoadingMap[productId];
+
+            return {
+              ...state,
+              loadingProductIdMap: newLoadingMap,
+            };
+          });
+        }, 100);
 
         return returnData;
       }, 500) as unknown as CartState['fetchGetCartData'],
@@ -162,6 +169,7 @@ export const createCartStore = (initProps: Partial<CartProperties>) =>
       openCart: () =>
         get().fetchGetCartData({
           action: 'open',
+          productId: 'cart',
         }),
       removeFromCart: (id) => {
         const inCart = get().isProductInCart(id);
