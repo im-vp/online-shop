@@ -1,5 +1,6 @@
 'use server';
 
+import { RequestCookie } from 'next/dist/compiled/@edge-runtime/cookies';
 import { cookies } from 'next/headers';
 
 import { connectMongoDB } from '@/lib/mongodb';
@@ -88,7 +89,7 @@ export const getUserIdByTokenFromCookie = async () => {
   }
 };
 
-export const getUserProfile = async (): Promise<IApiResponse<IUser>> => {
+export const getUserProfile = async () => {
   try {
     const id = await getUserIdByTokenFromCookie();
 
@@ -110,7 +111,7 @@ export const getUserProfile = async (): Promise<IApiResponse<IUser>> => {
 
     return {
       success: true,
-      data: JSON.parse(JSON.stringify(user)),
+      data: JSON.parse(JSON.stringify(user)) as IUser,
       message: 'Пользователь найден',
     };
   } catch (error) {

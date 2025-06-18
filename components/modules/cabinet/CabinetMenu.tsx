@@ -10,15 +10,14 @@ import { UserApi } from '@/services/api/user';
 const CabinetMenu = () => {
   const path = usePathname();
   const router = useRouter();
-  const { setAuthStatus, addUserFavorites } = useUserStore((state) => state);
+  const resetUserInfo = useUserStore((state) => state.resetUserInfo);
 
   const handlerLogout = async () => {
     const { success } = await UserApi.logout();
 
     if (success) {
       router.push('/');
-      setAuthStatus(false);
-      addUserFavorites([]);
+      resetUserInfo();
     }
   };
 

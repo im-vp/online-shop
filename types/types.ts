@@ -1,4 +1,4 @@
-import { IUser } from '@/types/user-types';
+import { IUser, IUserShort } from '@/types/user-types';
 
 export interface ICategories {
   _id: string;
@@ -161,6 +161,7 @@ export type OrderCreateApi = Omit<
 export interface IHeaderData {
   isAuth: boolean;
   myFavorites: string[] | null;
+  userProfile: IUserShort | null;
   cartQuantity: number;
   categoriesInfo: ICategoriesResponse;
 }

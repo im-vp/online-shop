@@ -33,11 +33,11 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const { categoriesInfo, cartQuantity } = await getStaticData();
-  const { isAuth, myFavorites } = await fetchInitialUserData();
+  const { isAuth, favorites, profile } = await fetchInitialUserData();
   
   return (
     <ReactQueryProvider>
-      <RootInitProvider value={{ isAuth, myFavorites, cartQuantity, categoriesInfo }}>
+      <RootInitProvider value={{ isAuth, myFavorites: favorites, userProfile: profile, cartQuantity, categoriesInfo }}>
         <html lang="ru">
           <body className={montserratAlternates.variable}>{children}</body>
         </html>

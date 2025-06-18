@@ -6,7 +6,6 @@ import Breadcrumbs from '@/components/modules/breadcrumbs/Breadcrumbs';
 import Product from '@/components/pages/Product/Product';
 
 import { ProductApi } from '@/services/api/products';
-import { getUserProfile } from '@/services/server-action/actions';
 import { getReviewsByProductId } from '@/services/server-action/reviews';
 
 interface Props {
@@ -32,8 +31,6 @@ const ProductPage: FC<Props> = async ({ params }) => {
   if (!success || !data) {
     return notFound();
   }
-
-  const { data: userProfile } = await getUserProfile();
   const { data: productReviews } = await getReviewsByProductId(data._id);
 
   return (
@@ -44,7 +41,7 @@ const ProductPage: FC<Props> = async ({ params }) => {
           { slug: data.slug, name: data.name },
         ]}
       />
-      <Product product={data} profile={userProfile} reviews={productReviews ?? []} />
+      <Product product={data} reviews={productReviews ?? []} />
     </>
   );
 };

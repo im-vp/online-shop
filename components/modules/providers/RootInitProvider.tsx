@@ -14,11 +14,17 @@ interface Props {
 export const InitDataContext = createContext<{
   userStore: ReturnType<typeof createUserStore>;
   cartStore: ReturnType<typeof createCartStore>;
-  categoriesInfo: ICategoriesResponse
+  categoriesInfo: ICategoriesResponse;
 } | null>(null);
 
 const RootInitProvider: FC<Props> = ({ children, value }) => {
-  const userStoreRef = useRef(createUserStore({ isAuth: value.isAuth, userFavorites: value.myFavorites || [] }));
+  const userStoreRef = useRef(
+    createUserStore({
+      isAuth: value.isAuth,
+      userFavorites: value.myFavorites || [],
+      profileInfo: value.userProfile || null,
+    }),
+  );
   const cartStoreRef = useRef(
     createCartStore({
       totalQuantity: value.cartQuantity,
@@ -30,7 +36,7 @@ const RootInitProvider: FC<Props> = ({ children, value }) => {
       value={{
         userStore: userStoreRef.current,
         cartStore: cartStoreRef.current,
-        categoriesInfo: value.categoriesInfo
+        categoriesInfo: value.categoriesInfo,
       }}
     >
       {children}

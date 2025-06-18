@@ -1,8 +1,11 @@
-export interface IUser {
+export interface IUserShort {
   _id: string;
   email: string;
   firstName: string;
   lastName: string;
+}
+
+export interface IUser extends IUserShort {
   password: string;
   phoneNumber?: number;
   role: 'user' | 'admin';

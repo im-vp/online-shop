@@ -6,9 +6,13 @@ import { connectMongoDB } from '@/lib/mongodb';
 import { serverErrorHandler } from '@/lib/utils/utils';
 
 import UserModel from '@/models/userModel';
-import { getUserIdByTokenFromCookie, loginCheck } from '@/services/server-action/actions';
+import {
+  getUserIdByTokenFromCookie,
+  getUserProfile,
+  loginCheck,
+} from '@/services/server-action/actions';
 import { getUserFavoritesIds } from '@/services/server-action/favorites';
-import { IEditUser } from '@/types/user-types';
+import { IEditUser, IUserShort } from '@/types/user-types';
 
 export const editUserProfile = async (userData: IEditUser) => {
   if (!userData) return { success: false, message: 'Нет данных для редактирования' };
@@ -29,19 +33,33 @@ export const editUserProfile = async (userData: IEditUser) => {
 };
 
 export const fetchInitialUserData = async () => {
+  const userObject: {
+    favorites: string[] | null;
+    profile: IUserShort | null;
+  } = {
+    favorites: null,
+    profile: null,
+  };
+
   try {
     const isAuth = await loginCheck();
-    let myFavorites = null;
 
     if (isAuth) {
-      const { success, data } = await getUserFavoritesIds();
+      const [favorites, profile] = await Promise.all([getUserFavoritesIds(), getUserProfile()]);
 
-      if (success && data) myFavorites = data;
+      if (favorites.success && favorites.data) userObject.favorites = favorites.data;
+      if (profile.success && profile.data)
+        userObject.profile = {
+          _id: profile.data._id,
+          firstName: profile.data.firstName,
+          lastName: profile.data.lastName,
+          email: profile.data.email,
+        };
     }
-    return { isAuth, myFavorites: myFavorites };
+    return { isAuth, ...userObject };
   } catch (error) {
     const result = serverErrorHandler(error);
 
-    return { isAuth: false, myFavorites: null, message: result.message };
+    return { isAuth: false, ...userObject, message: result.message };
   }
 };

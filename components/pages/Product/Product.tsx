@@ -13,15 +13,13 @@ import { SPINNER_STYLE } from '@/constants/constants';
 import { useAddToCart } from '@/hooks/useAddToCart';
 import '@/styles/product-page/product-page.css';
 import { IProduct, IReviews } from '@/types/types';
-import { IUser } from '@/types/user-types';
 
 interface Props {
   product: IProduct;
-  profile: IUser | null;
   reviews: IReviews[];
 }
 
-const Product: FC<Props> = ({ product, profile, reviews }) => {
+const Product: FC<Props> = ({ product, reviews }) => {
   const { addToCartHandler, isLoading } = useAddToCart(product._id);
 
   return (
@@ -66,7 +64,6 @@ const Product: FC<Props> = ({ product, profile, reviews }) => {
         <Reviews
           productId={product._id}
           productName={product.name}
-          profile={profile}
           reviews={reviews}
         />
       </div>

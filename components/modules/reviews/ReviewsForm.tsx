@@ -9,19 +9,17 @@ import { Controller, useForm } from 'react-hook-form';
 import { Rating } from '@/components/elements/Rating';
 import Spinner from '@/components/ui/spinner/Spinner';
 
+import { useUserStore } from '@/hooks/store/useStore';
 import { addReview } from '@/services/api/reviews';
 import '@/styles/reviews/reviews-form.css';
 import { IReviewBody } from '@/types/types';
 
 interface IProps {
-  userId: string;
   productId: string;
-  firstName: string;
-  lastName: string;
   callback?: () => void;
 }
 
-const ReviewsForm = ({ userId, productId, firstName, lastName, callback }: IProps) => {
+const ReviewsForm = ({ productId, callback }: IProps) => {
   const router = useRouter();
   const {
     handleSubmit,
@@ -31,13 +29,14 @@ const ReviewsForm = ({ userId, productId, firstName, lastName, callback }: IProp
   } = useForm<IReviewBody>();
   const [spinner, setSpinner] = useState(false);
   const [response, setResponse] = useState<{ success: boolean; message: string } | null>(null);
+  const profileInfo = useUserStore((state) => state.profileInfo);
 
   const onSubmit = handleSubmit(async (data) => {
     setSpinner(true);
 
     const { success, message } = await addReview({
       ...data,
-      user: userId,
+      user: profileInfo?._id || '',
       product: productId,
     });
     setSpinner(false);
@@ -74,7 +73,7 @@ const ReviewsForm = ({ userId, productId, firstName, lastName, callback }: IProp
             className="reviews-form__field"
             type="text"
             placeholder="Имя"
-            defaultValue={firstName}
+            defaultValue={profileInfo?.firstName || ''}
             {...register('firstName', {
               required: 'поле обязательно для заполнения',
               pattern: {
@@ -90,7 +89,7 @@ const ReviewsForm = ({ userId, productId, firstName, lastName, callback }: IProp
             className="reviews-form__field"
             type="text"
             placeholder="Фамилия"
-            defaultValue={lastName}
+            defaultValue={profileInfo?.lastName || ''}
             {...register('lastName', {
               required: 'поле обязательно для заполнения',
               pattern: {

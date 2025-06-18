@@ -5,12 +5,17 @@ export const axiosInstance = axios.create({
   withCredentials: true,
 });
 
+type InitOptions = {
+  baseURL: string;
+} & RequestOptions;
+
 export type RequestOptions = {
   query?: Record<string, string | number | boolean>;
   headers?: HeadersInit;
   body?: any;
   next?: NextFetchRequestConfig;
   cache?: RequestCache;
+  credentials?: RequestCredentials;
 };
 
 type NextFetchRequestConfig = {
@@ -19,14 +24,20 @@ type NextFetchRequestConfig = {
 };
 
 class FetchInstance {
-  private baseURL: string;
+  private initOptions: InitOptions = {
+    baseURL: '',
+    credentials: 'same-origin',
+  };
 
-  constructor(baseURL?: string) {
-    this.baseURL = baseURL || '';
+  constructor(configObject: InitOptions) {
+    this.initOptions = {
+      ...this.initOptions,
+      ...configObject,
+    };
   }
 
   private buildURL(url: string, query?: RequestOptions['query']) {
-    const fullUrl = new URL(`${this.baseURL}${url}`);
+    const fullUrl = new URL(`${this.initOptions.baseURL}${url}`);
     if (query) {
       Object.entries(query).forEach(([key, value]) => {
         fullUrl.searchParams.append(key, String(value));
@@ -47,8 +58,8 @@ class FetchInstance {
         ...options.headers,
       },
       body: method !== 'GET' && options.body ? JSON.stringify(options.body) : undefined,
-      next: options.next,
-      cache: options.cache,
+      ...this.initOptions,
+      ...options,
     };
 
     const res = await fetch(fullUrl, fetchOptions);
@@ -77,4 +88,7 @@ class FetchInstance {
   }
 }
 
-export const apiFetch = new FetchInstance(process.env.NEXT_PUBLIC_API_URL);
+export const apiFetch = new FetchInstance({
+  baseURL: process.env.NEXT_PUBLIC_API_URL || '',
+  credentials: 'include',
+});

@@ -8,9 +8,9 @@ import Link from 'next/link';
 import { ReviewsItem } from '@/components/modules/reviews/ReviewsItem';
 import Spinner from '@/components/ui/spinner/Spinner';
 
+import { useUserStore } from '@/hooks/store/useStore';
 import '@/styles/reviews/reviews.css';
 import { IReviews } from '@/types/types';
-import { IUser } from '@/types/user-types';
 
 const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsForm'), {
   loading: () => (
@@ -24,18 +24,18 @@ const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsFor
 interface IProps {
   productId: string;
   productName: string;
-  profile: IUser | null;
   reviews: IReviews[];
 }
 
-export const Reviews = ({ productName, productId, profile, reviews }: IProps) => {
+export const Reviews = ({ productName, productId, reviews }: IProps) => {
   const [isFormShow, setIsFormShow] = useState(false);
+  const isAuth = useUserStore((state) => state.isAuth);
 
   return (
     <section className="reviews">
       <h2 className="reviews__title">Отзывы про {productName}</h2>
 
-      {profile ? (
+      {isAuth ? (
         <div className="reviews__form-container">
           <button
             type="button"
@@ -46,13 +46,7 @@ export const Reviews = ({ productName, productId, profile, reviews }: IProps) =>
           </button>
           <div>
             {isFormShow && (
-              <ReviewForm
-                productId={productId}
-                userId={profile?._id || ''}
-                firstName={profile?.firstName || ''}
-                lastName={profile?.lastName || ''}
-                callback={() => setIsFormShow(false)}
-              />
+              <ReviewForm productId={productId} callback={() => setIsFormShow(false)} />
             )}
           </div>
         </div>
