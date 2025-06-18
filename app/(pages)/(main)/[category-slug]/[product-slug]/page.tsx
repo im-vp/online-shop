@@ -5,8 +5,8 @@ import { notFound } from 'next/navigation';
 import Breadcrumbs from '@/components/modules/breadcrumbs/Breadcrumbs';
 import Product from '@/components/pages/Product/Product';
 
+import { ProductApi } from '@/services/api/products';
 import { getUserProfile } from '@/services/server-action/actions';
-import { getProduct } from '@/services/server-action/products';
 import { getReviewsByProductId } from '@/services/server-action/reviews';
 
 interface Props {
@@ -14,8 +14,8 @@ interface Props {
 }
 
 export async function generateMetadata({ params }: Props) {
-  const productName = params['product-slug'];
-  const { data, success } = await getProduct(productName);
+  const productSlug = params['product-slug'];
+  const { data, success } = await ProductApi.getProduct(productSlug);
 
   if (success && data) {
     return {
@@ -27,7 +27,7 @@ export async function generateMetadata({ params }: Props) {
 
 const ProductPage: FC<Props> = async ({ params }) => {
   const { 'product-slug': productSlug } = params;
-  const { success, data } = await getProduct(productSlug);
+  const { success, data } = await ProductApi.getProduct(productSlug);
 
   if (!success || !data) {
     return notFound();

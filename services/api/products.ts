@@ -1,6 +1,6 @@
-import { errorHandler } from '@/lib/utils/utils';
+import { clientErrorHandler, errorHandler } from '@/lib/utils/utils';
 
-import { axiosInstance } from '@/services/api/instance';
+import { apiFetch, axiosInstance } from '@/services/api/instance';
 import { IApiResponse, IProduct, IProductResponse } from '@/types/types';
 
 export const ProductApi = {
@@ -13,6 +13,19 @@ export const ProductApi = {
       return data;
     } catch (error) {
       return { success: false, data: null, message: errorHandler(error) };
+    }
+  },
+  getProduct: async (slug: string): Promise<IApiResponse<IProduct>> => {
+    try {
+      const response = await apiFetch.get<IApiResponse<IProduct>>(`/product/get/${slug}`, {
+        next: {
+          revalidate: 1800,
+        },
+      });
+
+      return response;
+    } catch (error) {
+      return await clientErrorHandler(error);
     }
   },
 };
@@ -31,18 +44,5 @@ export const getProducts = async (
   } catch (error) {
     //@ts-ignore
     return { success: false, data: null, message: errorHandler(error) };
-  }
-};
-
-export const getProduct = async (product: string): Promise<IApiResponse<IProduct>> => {
-  try {
-    const { data } = await axiosInstance.get<IApiResponse<IProduct>>(
-      `/product/get?product=${product}`,
-    );
-
-    return data;
-  } catch (error) {
-    //@ts-ignore
-    return { success: false, data: {}, message: errorHandler(error) };
   }
 };

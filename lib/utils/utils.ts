@@ -116,6 +116,59 @@ export const errorHandler = (error: any): string => {
   return error.message;
 };
 
+export const clientErrorHandler = async (error: unknown) => {
+  const base = {
+    success: false,
+    message: 'Произошла ошибка',
+    data: null,
+    status: 500,
+    error,
+  };
+
+  // Если ошибка - это Response с телом ошибки от API
+  if (error instanceof Response) {
+    try {
+      const data = await error.json();
+      return {
+        ...base,
+        message: data?.message || base.message,
+        status: error.status,
+        error: data || error,
+      };
+    } catch {
+      return {
+        ...base,
+        message: `Ошибка сервера ${error.status} ${error.statusText}`,
+        status: error.status,
+        error,
+      };
+    }
+  }
+
+  // Ошибка из throw new Error(message)
+  if (error instanceof Error) {
+    return {
+      ...base,
+      message: error.message || base.message,
+      status: 0, // здесь статус неизвестен, например сеть
+      error,
+    };
+  }
+
+  // Если ошибка — просто строка
+  if (typeof error === 'string') {
+    return {
+      ...base,
+      message: error,
+      status: 0,
+      error,
+    };
+  }
+
+  // Неизвестный тип ошибки
+  return base;
+};
+
 export const serverErrorHandler = (error: any) => {
   const base = {
     success: false,
