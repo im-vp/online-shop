@@ -55,6 +55,13 @@ export interface IRating {
   value: number;
   reviewCount: number;
 }
+export interface IReviewsBody {
+  user: string;
+  reviewText: string;
+  rating: number;
+  productId: string;
+  productSlug: string;
+}
 
 export interface IReviews {
   _id: string;

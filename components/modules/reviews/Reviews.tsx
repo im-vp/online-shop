@@ -6,11 +6,14 @@ import dynamic from 'next/dynamic';
 import Link from 'next/link';
 
 import { ReviewsItem } from '@/components/modules/reviews/ReviewsItem';
+import ReviewsItemSkeleton from '@/components/modules/reviews/ReviewsItemSkeleton';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { useUserStore } from '@/hooks/store/useStore';
+import { ReviewsApi } from '@/services/api/reviews';
 import '@/styles/reviews/reviews.css';
-import { IReviews } from '@/types/types';
+import { useQuery } from '@tanstack/react-query';
+import { IProduct } from '@/types/types';
 
 const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsForm'), {
   loading: () => (
@@ -22,20 +25,24 @@ const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsFor
 });
 
 interface IProps {
-  productId: string;
-  productName: string;
-  reviews: IReviews[];
+  product: IProduct;
 }
 
-export const Reviews = ({ productName, productId, reviews }: IProps) => {
-  const [isFormShow, setIsFormShow] = useState(false);
+export const Reviews = ({ product }: IProps) => {
   const isAuth = useUserStore((state) => state.isAuth);
+  const [isFormShow, setIsFormShow] = useState(false);
+
+  const { data, isPending, isSuccess } = useQuery({
+    queryKey: ['productReviews', product._id],
+    queryFn: () => ReviewsApi.getProductReviews(product._id),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <section className="reviews">
-      <h2 className="reviews__title">Отзывы про {productName}</h2>
+      <h2 className="reviews__title">Отзывы про {product.name}</h2>
 
-      {isAuth ? (
+      {isPending ? null : isAuth ? (
         <div className="reviews__form-container">
           <button
             type="button"
@@ -46,7 +53,7 @@ export const Reviews = ({ productName, productId, reviews }: IProps) => {
           </button>
           <div>
             {isFormShow && (
-              <ReviewForm productId={productId} callback={() => setIsFormShow(false)} />
+              <ReviewForm productId={product._id} productSlug={product.slug} callback={() => setIsFormShow(false)} />
             )}
           </div>
         </div>
@@ -59,10 +66,11 @@ export const Reviews = ({ productName, productId, reviews }: IProps) => {
           что бы оставить отзыв
         </p>
       )}
-
-      {reviews.length > 0 ? (
+      {isPending ? (
+        Array.from({ length: 3 }).map((_, index) => <ReviewsItemSkeleton key={index} />)
+      ) : isSuccess && data.data && data.data.length ? (
         <ul className="reviews__list">
-          {reviews.map((review) => (
+          {data.data.map((review) => (
             <li className="reviews__list-item" key={review._id}>
               <ReviewsItem
                 firstName={review.user.firstName}

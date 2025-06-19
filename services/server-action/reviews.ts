@@ -15,18 +15,13 @@ export const getReviewsByProductId = async (productId: string) => {
       .sort({ createdAt: -1 });
 
     return {
+      status: 200,
       success: true,
       data: JSON.parse(JSON.stringify(reviews)) as IReviews[],
       message: 'Отзывы о товаре',
     };
   } catch (error) {
-    const result = serverErrorHandler(error);
-
-    return {
-      success: result.success,
-      data: result.data,
-      message: result.message,
-    };
+    return serverErrorHandler(error);
   }
 };
 

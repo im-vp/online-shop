@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { getProducts } from '@/services/api/products';
+import { ProductApi } from '@/services/api/products';
 import { IApiResponse, IProductResponse } from '@/types/types';
 import { useQuery } from '@tanstack/react-query';
 
@@ -16,7 +16,7 @@ export const useGetProductsQuery = (productSlug: string, stringParams: string) =
 
   const { data, isSuccess, isFetching } = useQuery<IApiResponse<IProductResponse>>({
     queryKey: ['products', { stringParams }],
-    queryFn: () => getProducts(productSlug, stringParams),
+    queryFn: () => ProductApi.getProducts(productSlug, stringParams),
     enabled,
     staleTime: 1000 * 60 * 5,
   });

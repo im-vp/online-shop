@@ -57,11 +57,11 @@ class FetchInstance {
         'Content-Type': 'application/json',
         ...options.headers,
       },
-      body: method !== 'GET' && options.body ? JSON.stringify(options.body) : undefined,
       ...this.initOptions,
       ...options,
+      body: method !== 'GET' && options.body ? JSON.stringify(options.body) : undefined,
     };
-
+   
     const res = await fetch(fullUrl, fetchOptions);
 
     if (!res.ok) {

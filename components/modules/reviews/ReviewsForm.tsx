@@ -10,16 +10,17 @@ import { Rating } from '@/components/elements/Rating';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { useUserStore } from '@/hooks/store/useStore';
-import { addReview } from '@/services/api/reviews';
+import { useAddReviewMutation } from '@/hooks/useAddReviewMutation';
 import '@/styles/reviews/reviews-form.css';
 import { IReviewBody } from '@/types/types';
 
 interface IProps {
   productId: string;
+  productSlug: string;
   callback?: () => void;
 }
 
-const ReviewsForm = ({ productId, callback }: IProps) => {
+const ReviewsForm = ({ productId, productSlug, callback }: IProps) => {
   const router = useRouter();
   const {
     handleSubmit,
@@ -27,6 +28,7 @@ const ReviewsForm = ({ productId, callback }: IProps) => {
     control,
     formState: { errors },
   } = useForm<IReviewBody>();
+  const { mutateAsync } = useAddReviewMutation();
   const [spinner, setSpinner] = useState(false);
   const [response, setResponse] = useState<{ success: boolean; message: string } | null>(null);
   const profileInfo = useUserStore((state) => state.profileInfo);
@@ -34,16 +36,16 @@ const ReviewsForm = ({ productId, callback }: IProps) => {
   const onSubmit = handleSubmit(async (data) => {
     setSpinner(true);
 
-    const { success, message } = await addReview({
+    const { success, message } = await mutateAsync({
       ...data,
       user: profileInfo?._id || '',
-      product: productId,
+      productId,
+      productSlug,
     });
     setSpinner(false);
     setResponse({ success, message });
     if (success) {
       callback && callback();
-      router.refresh();
     }
   });
 
@@ -61,7 +63,7 @@ const ReviewsForm = ({ productId, callback }: IProps) => {
               readonly={false}
               showCount={false}
               value={field.value}
-              callback={field.onChange} // Обновление значения в React Hook Form
+              callback={field.onChange}
             />
           )}
         />

@@ -12,14 +12,13 @@ import Spinner from '@/components/ui/spinner/Spinner';
 import { SPINNER_STYLE } from '@/constants/constants';
 import { useAddToCart } from '@/hooks/useAddToCart';
 import '@/styles/product-page/product-page.css';
-import { IProduct, IReviews } from '@/types/types';
+import { IProduct } from '@/types/types';
 
 interface Props {
   product: IProduct;
-  reviews: IReviews[];
 }
 
-const Product: FC<Props> = ({ product, reviews }) => {
+const Product: FC<Props> = ({ product }) => {
   const { addToCartHandler, isLoading } = useAddToCart(product._id);
 
   return (
@@ -61,11 +60,7 @@ const Product: FC<Props> = ({ product, reviews }) => {
         </section>
       </div>
       <div className="product-page__bottom">
-        <Reviews
-          productId={product._id}
-          productName={product.name}
-          reviews={reviews}
-        />
+        <Reviews product={product} />
       </div>
     </div>
   );
