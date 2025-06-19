@@ -12,29 +12,30 @@ import { useQuery } from '@tanstack/react-query';
 interface Props {}
 
 const Favorites: FC<Props> = () => {
-  const { data, isPending, isSuccess } = useQuery({
+  const { data, isPending, isFetching, isSuccess } = useQuery({
     queryKey: ['userFavorites'],
     queryFn: () => FavoritesApi.getAll(),
   });
 
   const favorites = data?.data || [];
+  const isLoaded = !isPending && !isFetching;
 
   return (
     <>
-      {isPending && (
+      {(isPending || isFetching) && (
         <Spinner
           color="#1db954"
           css={{ display: 'flex', justifyContent: 'center', width: '100%', margin: '25px auto' }}
         />
       )}
-      {isSuccess && (
+      {isLoaded && (
         <h2 className="cabinet-page__title">
           {isSuccess && !!favorites.length
             ? 'Ваш список избранных товаров'
-            : 'У Вас пока нет избранных товаров'}{' '}
+            : 'У Вас пока нет избранных товаров'}
         </h2>
       )}
-      {!!favorites.length && (
+      {isLoaded && !!favorites.length && (
         <ul className="favorites-list">
           {favorites.map((el) => (
             <FavoritesItem product={el} key={el._id} />
