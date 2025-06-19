@@ -14,8 +14,7 @@ import { ICategories, IFilterParams, IProduct } from '@/types/types';
 
 interface Props {
   products: IProduct[];
-  productsQuantity: number;
-  favorites: string[] | null;
+  productsQuantity: number
   category: ICategories;
   filterParams: IFilterParams;
 }
@@ -24,7 +23,6 @@ export const Category = ({
   products,
   category,
   productsQuantity,
-  favorites,
   filterParams: filters,
 }: Props) => {
   const [productsList, setProductsList] = useState(products);
@@ -68,7 +66,7 @@ export const Category = ({
           {productsQuantity > 0 ? (
             <section className={'category-page__list'}>
               {productsList.map((product) => (
-                <ProductItem key={product._id} {...product} favorites={favorites} />
+                <ProductItem key={product._id} {...product} />
               ))}
             </section>
           ) : (

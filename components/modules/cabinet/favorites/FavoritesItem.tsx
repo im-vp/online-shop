@@ -44,7 +44,7 @@ const FavoritesItem: FC<Props> = ({ product }) => {
               }}
             />
           )}
-          <FavoritesButton productId={_id.toString()} favorites={[_id.toString()]} />
+          <FavoritesButton productId={_id.toString()} />
         </div>
       </div>
     </li>

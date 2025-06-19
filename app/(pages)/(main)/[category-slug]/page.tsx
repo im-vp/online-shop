@@ -5,7 +5,6 @@ import { Category } from '@/components/pages/Category/Category';
 
 import { getObjectFilterParams } from '@/lib/utils/utils';
 
-import { getUserFavoritesIds } from '@/services/server-action/favorites';
 import { getCategoryProducts } from '@/services/server-action/products';
 
 interface Props {
@@ -40,8 +39,6 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
   }
   const filterParams = getObjectFilterParams(searchParams);
 
-  const { data: favorites } = await getUserFavoritesIds();
-
   return (
     <>
       <Breadcrumbs segments={[{ slug: data.category.slug, name: data.category.name }]} />
@@ -49,7 +46,6 @@ const CategoryPage = async ({ params, searchParams }: Props) => {
         products={data.products}
         productsQuantity={data.productsQuantity}
         category={data.category}
-        favorites={favorites}
         filterParams={filterParams}
       />
     </>

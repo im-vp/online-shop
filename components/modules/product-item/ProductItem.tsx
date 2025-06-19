@@ -18,7 +18,6 @@ import { IProduct } from '@/types/types';
 
 interface Props {
   className?: string;
-  favorites?: string[] | null;
 }
 
 export const ProductItem: FC<IProduct & Props> = ({
@@ -32,7 +31,6 @@ export const ProductItem: FC<IProduct & Props> = ({
   className = '',
   product_code,
   rating,
-  favorites = [],
 }) => {
   const { addToCartHandler, isLoading } = useAddToCart(_id);
 
@@ -44,7 +42,7 @@ export const ProductItem: FC<IProduct & Props> = ({
         </div>
         <h2 className={`product-title ${style.product__title}`}>{name}</h2>
       </Link>
-      <FavoritesButton productId={_id} favorites={favorites} />
+      <FavoritesButton productId={_id} />
       <Rating value={rating.value} reviewCount={rating.reviewCount} />
 
       <div className={style.product__price}>
