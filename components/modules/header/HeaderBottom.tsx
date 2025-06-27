@@ -33,13 +33,13 @@ const HeaderBottom: FC<Props> = () => {
       <div className="header__categories">
         <button
           type="button"
-          className={`header__categories-button ${activeButton && 'active'}`}
+          className={`header__categories-button ${activeButton ? 'active' : ''}`}
           onClick={() => {
             setActiveButton((prev) => !prev);
             activeButton ? setShowOverlay(false) : setShowOverlay(true);
           }}
         >
-          Категории
+          <span className='header__categories-button-text'>Категории</span>
         </button>
       </div>
       <Search

@@ -218,3 +218,28 @@
   border-radius: var(--border-radius);
   z-index: 10;
 }
+@media (max-width: 700px) {
+  .header__bottom {
+    flex-wrap: wrap;
+  }
+  .header__search {
+    order: 3;
+    max-width: 100%;
+    flex: 100%;
+  }
+}
+@media (max-width: 400px) {
+  .header__categories-button {
+    display: flex;
+    height: 39px;
+    width: 39px;
+    padding: 0;
+  }
+  .header__categories-button::before {
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .header__categories-button-text {
+    display: none;
+  }
+}
