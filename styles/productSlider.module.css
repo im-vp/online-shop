@@ -1,5 +1,6 @@
 .container {
   max-width: 400px;
+  margin: auto;
 }
 .slider {
   --arrow-color: var(--color-green);
@@ -10,22 +11,25 @@
   align-items: center;
   justify-content: center;
   height: 350px;
-  margin-bottom: 95px;
+  margin-bottom: 25px;
 }
 .dots {
-  column-gap: 10px;
+  justify-content: center;
 }
 .dots__btn {
-  display: flex !important;
+  display: flex;
   align-items: center;
   justify-content: center;
-  width: 80px;
+  max-width: 120px;
   height: 80px;
-  padding: 5px;
   border: 1px solid var(--color-green);
   border-radius: var(--border-radius);
   background-color: #fff;
+  cursor: pointer;
+}
+:global(.swiper-slide-thumb-active).dots__btn {
+  border-color: var(--color-yellow);
 }
 .dots__btn:hover {
-  border-color: var(--color-light-green);
+  border-color: var(--color-yellow);
 }

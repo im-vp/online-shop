@@ -1,9 +1,15 @@
-import { FC } from 'react';
+'use client';
+
+import { FC, useState } from 'react';
 
 import Image from 'next/image';
 
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
+import 'swiper/css';
+import 'swiper/css/thumbs';
+import { Navigation, Thumbs } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import type { SwiperOptions } from 'swiper/types';
+import type { Swiper as SwiperClass } from 'swiper/types';
 
 import style from '@/styles/productSlider.module.css';
 
@@ -13,31 +19,43 @@ interface Props {
 }
 
 const ProductSlider: FC<Props> = ({ images, className }) => {
-  const settings = {
-    customPaging: function (i: number) {
-      return (
-        <button type="button" className={style.dots__btn}>
-          <Image src={images[i]} alt="" width={620} height={530} />
-        </button>
-      );
-    },
-    dotsClass: `slick-dots ${style.dots}`,
-    dots: true,
-    infinite: true,
+  const [thumbsSwiper, setThumbsSwiper] = useState<SwiperClass | null>(null);
+  const settingsMain: SwiperOptions = {
+    modules: [Thumbs, Navigation],
+    thumbs: { swiper: thumbsSwiper },
+    navigation: true,
+    loop: true,
   };
+  const settingsThumbs: SwiperOptions = {
+    modules: [Thumbs],
+    slidesPerView: images.length > 4 ? 4 : images.length,
+    watchSlidesProgress: true,
+    spaceBetween: 10,
+    wrapperClass: style.dots,
+  };
+
   if (!images.length) return null;
+
   if (images.length === 1) return <Image src={images[0]} alt="" width={620} height={530} />;
+
   return (
     <div className={`${style.container} ${className}`}>
-      <Slider {...settings} className={style.slider}>
+      <Swiper {...settingsMain} className={style.slider}>
         {images.map((el) => (
-          <div key={el}>
+          <SwiperSlide key={el}>
             <div className={style.item}>
               <Image src={el} alt="" width={620} height={530} />
             </div>
-          </div>
+          </SwiperSlide>
         ))}
-      </Slider>
+      </Swiper>
+      <Swiper onSwiper={setThumbsSwiper} {...settingsThumbs} className={style.dots}>
+        {images.map((el, index) => (
+          <SwiperSlide key={index} className={style.dots__btn}>
+            <Image src={el} alt="" width={50} height={50} />
+          </SwiperSlide>
+        ))}
+      </Swiper>
     </div>
   );
 };
