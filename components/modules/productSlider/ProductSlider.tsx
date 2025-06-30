@@ -28,10 +28,9 @@ const ProductSlider: FC<Props> = ({ images, className }) => {
   };
   const settingsThumbs: SwiperOptions = {
     modules: [Thumbs],
-    slidesPerView: images.length > 4 ? 4 : images.length,
+    slidesPerView: images.length > 3 ? 3 : images.length,
     watchSlidesProgress: true,
     spaceBetween: 10,
-    wrapperClass: style.dots,
   };
 
   if (!images.length) return null;

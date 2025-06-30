@@ -13,15 +13,12 @@
   height: 350px;
   margin-bottom: 25px;
 }
-.dots {
-  justify-content: center;
-}
 .dots__btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 120px;
   height: 80px;
+  padding: 5px;
   border: 1px solid var(--color-green);
   border-radius: var(--border-radius);
   background-color: #fff;
@@ -32,4 +29,12 @@
 }
 .dots__btn:hover {
   border-color: var(--color-yellow);
+}
+@media (max-width: 420px) {
+  .item {
+    height: 250px;
+  }
+  .dots__btn {
+    height: 60px;
+  }
 }
