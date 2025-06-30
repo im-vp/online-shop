@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 
-import CabinetMenu from '@/components/modules/cabinet/CabinetMenu';
+import CabinetMenu from '@/components/modules/cabinet/cabinetMenu/CabinetMenu';
 
 interface Props {
   children: React.ReactNode;
