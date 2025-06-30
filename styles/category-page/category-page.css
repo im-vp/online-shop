@@ -34,8 +34,8 @@
   background-color: rgba(255, 255, 255, 0.5);
 }
 .category-page__list {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   gap: 15px;
 }
 .category-page__empty {
@@ -43,4 +43,12 @@
   margin: 25px 0;
   color: var(--color-dark-gray);
   text-align: center;
+}
+@media (max-width: 1000px) {
+  .category-page__container {
+    flex-direction: column;
+  }
+  .category-page__top-line {
+    flex-direction: column-reverse;
+  }
 }
