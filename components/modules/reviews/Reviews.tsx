@@ -12,8 +12,8 @@ import Spinner from '@/components/ui/spinner/Spinner';
 import { useUserStore } from '@/hooks/store/useStore';
 import { ReviewsApi } from '@/services/api/reviews';
 import '@/styles/reviews/reviews.css';
-import { useQuery } from '@tanstack/react-query';
 import { IProduct } from '@/types/types';
+import { useQuery } from '@tanstack/react-query';
 
 const ReviewForm = dynamic(() => import('@/components/modules/reviews/ReviewsForm'), {
   loading: () => (
@@ -53,7 +53,11 @@ export const Reviews = ({ product }: IProps) => {
           </button>
           <div>
             {isFormShow && (
-              <ReviewForm productId={product._id} productSlug={product.slug} callback={() => setIsFormShow(false)} />
+              <ReviewForm
+                productId={product._id}
+                productSlug={product.slug}
+                callback={() => setIsFormShow(false)}
+              />
             )}
           </div>
         </div>
@@ -67,7 +71,13 @@ export const Reviews = ({ product }: IProps) => {
         </p>
       )}
       {isPending ? (
-        Array.from({ length: 3 }).map((_, index) => <ReviewsItemSkeleton key={index} />)
+        <ul className="reviews__list">
+          {Array.from({ length: 3 }).map((_, index) => (
+            <li key={index}>
+              <ReviewsItemSkeleton />
+            </li>
+          ))}
+        </ul>
       ) : isSuccess && data.data && data.data.length ? (
         <ul className="reviews__list">
           {data.data.map((review) => (
