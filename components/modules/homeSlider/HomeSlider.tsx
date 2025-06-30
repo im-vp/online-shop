@@ -33,8 +33,8 @@ const HomeSlider = () => {
     <div className="home-slider-container">
       <Swiper modules={[Navigation, Pagination]} {...settings} className="slide--theme home-slider">
         {img.map((el) => (
-          <SwiperSlide>
-            <Link key={el.link} href={el.link} className="home-slider__item">
+          <SwiperSlide key={el.link}>
+            <Link href={el.link} className="home-slider__item">
               <Image src={el.src} alt="" width={1290} height={500} />
             </Link>
           </SwiperSlide>
