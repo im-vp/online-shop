@@ -27,10 +27,10 @@ export interface IProduct {
   createdAt?: Date;
   updatedAt?: Date;
 }
-export interface IApiResponse<T = null> {
+export interface IApiResponse<T = null, U = null> {
   success: boolean;
   message: string;
-  data: T | null;
+  data: T | U;
   status?: number;
   error?: any;
 }
