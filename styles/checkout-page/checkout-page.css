@@ -90,3 +90,25 @@
 .checkout-page__holder-info__button-submit:hover {
   background-color: var(--color-light-green);
 }
+@media (max-width: 1000px) {
+  .checkout-page__container {
+    column-gap: 15px;
+  }
+  .checkout-page__second {
+    width: 400px;
+  }
+}
+@media (max-width: 820px) {
+  .checkout-page__container {
+    flex-direction: column-reverse;
+    row-gap: 25px;
+  }
+  .checkout-page__second {
+    width: 100%;
+  }
+}
+@media (max-width: 520px) {
+  .checkout-page__item-title {
+    font-size: 0.9em;
+  }
+}

@@ -13,3 +13,8 @@
   font-style: italic;
   font-size: 0.9em;
 }
+@media (max-width: 420px) {
+  .container {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
