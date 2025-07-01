@@ -113,3 +113,30 @@
   font-size: 1.1em;
   font-weight: 500;
 }
+@media (max-width: 700px) {
+  .order-item__status-text {
+    display: none;
+  }
+  .order-item__product-link {
+    flex-wrap: wrap;
+  }
+  .order-item__product-name {
+    width: calc(100% - 50px - 10px);
+  }
+  .order-item__product-quantity {
+    margin-left: 60px;
+  }
+}
+@media (max-width: 520px) {
+  .order-item__top,
+  .order-item__bottom {
+    flex-direction: column;
+    align-items: center;
+  }
+  .order-item__order-number {
+    align-items: center;
+  }
+  .order-item__order-number-text {
+    font-size: 0.8em;
+  }
+}
