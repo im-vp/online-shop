@@ -1,4 +1,4 @@
-import { errorHandler } from '@/lib/utils/utils';
+import { clientErrorHandler } from '@/lib/utils/utils';
 
 import { apiFetch } from '@/services/api/instance';
 import { IApiResponse, IOrder, OrderCreateApi } from '@/types/types';
@@ -12,7 +12,7 @@ export const OrdersApi = {
 
       return response;
     } catch (error) {
-      return { success: false, data: null, message: errorHandler(error) };
+      return clientErrorHandler(error);
     }
   },
   getById: async (userId: string): Promise<IApiResponse<IOrder[]>> => {
@@ -21,7 +21,7 @@ export const OrdersApi = {
 
       return response;
     } catch (error) {
-      return { success: false, data: null, message: errorHandler(error) };
+      return clientErrorHandler(error);
     }
   },
 };

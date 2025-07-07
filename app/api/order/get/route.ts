@@ -29,7 +29,7 @@ export async function GET(request: NextRequest) {
       });
 
     if (!orders || !orders.length) {
-      return NextResponse.json({ success: false, message: 'Список заказов пуст' }, { status: 404 });
+      return NextResponse.json({ success: false, message: 'Список заказов пуст' }, { status: 200 });
     }
 
     return NextResponse.json({ success: true, data: orders, message: 'Ваши заказы' });
