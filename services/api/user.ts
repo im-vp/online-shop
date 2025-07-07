@@ -1,72 +1,66 @@
-import { AxiosRequestConfig } from 'axios';
+import { clientErrorHandler } from '@/lib/utils/utils';
 
-import { errorHandler } from '@/lib/utils/utils';
-
-import { axiosInstance } from '@/services/api/instance';
+import { RequestOptions, apiFetch } from '@/services/api/instance';
 import { IAuthorizationBody, IRegistrationBody } from '@/types/auth-types';
 import { IApiResponse } from '@/types/types';
 
 export const UserApi = {
-  logout: async () => {
+  logout: async (): Promise<IApiResponse> => {
     try {
-      const { data } = await axiosInstance.get<IApiResponse>('/user/logout');
+      const { body } = await apiFetch.get('/user/logout');
 
-      return data;
+      return body;
     } catch (error) {
-      return { success: false, data: null, message: errorHandler(error) };
+      return clientErrorHandler(error);
     }
   },
-};
+  userRegistration: async (requestBody: IRegistrationBody): Promise<IApiResponse> => {
+    try {
+      const { body } = await apiFetch.post('/user/registration', {
+        body: requestBody,
+      });
 
-export const userRegistration = async (body: IRegistrationBody): Promise<IApiResponse> => {
-  try {
-    const { data } = await axiosInstance.post<IApiResponse>('/user/registration', {
-      ...body,
-    });
+      return body;
+    } catch (error) {
+      return clientErrorHandler(error);
+    }
+  },
+  userLogin: async (requestBody: IAuthorizationBody): Promise<IApiResponse> => {
+    try {
+      const { body } = await apiFetch.post('/user/login', {
+        body: requestBody,
+      });
 
-    return data;
-  } catch (error) {
-    return { success: false, data: null, message: errorHandler(error) };
-  }
-};
+      return body;
+    } catch (error) {
+      return clientErrorHandler(error);
+    }
+  },
+  userLoginCheck: async (config?: { [key: string]: any }): Promise<IApiResponse> => {
+    try {
+      const { body } = await apiFetch.get('/user/login-check', config);
 
-export const userLogin = async (body: IAuthorizationBody): Promise<IApiResponse> => {
-  try {
-    const { data } = await axiosInstance.post<IApiResponse>('/user/login', {
-      ...body,
-    });
+      return body;
+    } catch (error) {
+      return clientErrorHandler(error);
+    }
+  },
+  userRefreshTokens: async (
+    options?: RequestOptions,
+  ): Promise<{ success: boolean; headers: Headers; error?: any }> => {
+    try {
+      const { body, headers } = await apiFetch.get('/user/refresh', { ...options });
 
-    return data;
-  } catch (error) {
-    return { success: false, data: null, message: errorHandler(error) };
-  }
-};
-
-export const userLoginCheck = async (config?: { [key: string]: any }): Promise<IApiResponse> => {
-  try {
-    const { data } = await axiosInstance.get<IApiResponse>('/user/login-check', config);
-
-    return data;
-  } catch (error) {
-    return { success: false, data: null, message: errorHandler(error) };
-  }
-};
-
-export const userRefreshTokens = async (
-  config?: AxiosRequestConfig,
-): Promise<{ data: IApiResponse | null; headers: any; error?: string }> => {
-  try {
-    const response = await axiosInstance.get<IApiResponse>('/user/refresh', config);
-
-    return {
-      data: response.data,
-      headers: response.headers,
-    };
-  } catch (error) {
-    return {
-      data: null,
-      headers: {},
-      error: errorHandler(error),
-    };
-  }
+      return {
+        success: body.success,
+        headers: headers,
+      };
+    } catch (error) {
+      return {
+        success: false,
+        headers: {} as Headers,
+        error: (await clientErrorHandler(error)).error,
+      };
+    }
+  },
 };

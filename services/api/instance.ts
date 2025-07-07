@@ -1,9 +1,4 @@
-import axios from 'axios';
-
-export const axiosInstance = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_API_URL,
-  withCredentials: true,
-});
+import { ExtendedApiResponse } from '@/types/types';
 
 type InitOptions = {
   baseURL: string;
@@ -46,7 +41,11 @@ class FetchInstance {
     return fullUrl.toString();
   }
 
-  private async request<T>(method: string, url: string, options: RequestOptions = {}): Promise<T> {
+  private async request<T = null, U = null>(
+    method: string,
+    url: string,
+    options: RequestOptions = {},
+  ): Promise<ExtendedApiResponse<T, U>> {
     const fullUrl = this.buildURL(url, options.query);
 
     const fetchOptions: RequestInit & {
@@ -61,30 +60,35 @@ class FetchInstance {
       ...options,
       body: method !== 'GET' && options.body ? JSON.stringify(options.body) : undefined,
     };
-   
+
     const res = await fetch(fullUrl, fetchOptions);
+    const body = await res.json();
 
     if (!res.ok) {
       throw new Error(`Fetch error: ${res.status} ${res.statusText}`);
     }
 
-    return res.json();
+    return {
+      body,
+      headers: res.headers,
+      status: res.status,
+    };
   }
 
-  get<T>(url: string, options?: RequestOptions) {
-    return this.request<T>('GET', url, options);
+  get<T = null, U = null>(url: string, options?: RequestOptions) {
+    return this.request<T, U>('GET', url, options);
   }
 
-  post<T>(url: string, options?: RequestOptions) {
-    return this.request<T>('POST', url, options);
+  post<T = null, U = null>(url: string, options?: RequestOptions) {
+    return this.request<T, U>('POST', url, options);
   }
 
-  put<T>(url: string, options?: RequestOptions) {
-    return this.request<T>('PUT', url, options);
+  put<T = null, U = null>(url: string, options?: RequestOptions) {
+    return this.request<T, U>('PUT', url, options);
   }
 
-  delete<T>(url: string, options?: RequestOptions) {
-    return this.request<T>('DELETE', url, options);
+  delete<T = null, U = null>(url: string, options?: RequestOptions) {
+    return this.request<T, U>('DELETE', url, options);
   }
 }
 

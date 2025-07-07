@@ -1,7 +1,7 @@
 'use server';
 
 import { connectMongoDB } from '@/lib/mongodb';
-import { errorHandler, serverErrorHandler } from '@/lib/utils/utils';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import ProductModel from '@/models/productModel';
 import ReviewsModel from '@/models/reviewsModel';

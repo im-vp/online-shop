@@ -10,7 +10,7 @@ import Spinner from '@/components/ui/spinner/Spinner';
 
 import { AUTH_FORM_TYPE, POPUP_ID } from '@/constants/constants';
 import { useUserStore } from '@/hooks/store/useStore';
-import { userLogin } from '@/services/api/user';
+import { UserApi } from '@/services/api/user';
 import { getUserFavoritesIds } from '@/services/server-action/favorites';
 import { usePopupStore } from '@/store/PopupStore';
 import { IAuthorizationBody, TypeForm } from '@/types/auth-types';
@@ -37,7 +37,7 @@ const Authorization: FC<Props> = ({ onClick }) => {
   };
   const onSubmit = handleSubmit(async (body) => {
     setSpinner(true);
-    const { success, message } = await userLogin(body);
+    const { success, message } = await UserApi.userLogin(body);
 
     setSpinner(false);
     setResponse({ success, message });

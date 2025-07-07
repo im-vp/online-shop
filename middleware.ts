@@ -5,7 +5,7 @@ import { parse } from 'set-cookie-parser';
 
 import { isTokenValid } from '@/lib/utils/utils';
 
-import { userRefreshTokens } from '@/services/api/user';
+import { UserApi } from '@/services/api/user';
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
@@ -38,14 +38,13 @@ export async function middleware(request: NextRequest) {
     });
   }
 
-  const refreshResponse = await userRefreshTokens({
+  const { success, headers: refreshHeaders } = await UserApi.userRefreshTokens({
     headers: {
-      Cookie: request.headers.get('cookie'),
+      Cookie: request.headers.get('cookie') || '',
     },
-    withCredentials: true,
   });
 
-  if (!refreshResponse.data?.success) {
+  if (!success) {
     const response = pathname.startsWith('/cabinet')
       ? NextResponse.redirect(new URL('/authentication', request.nextUrl))
       : NextResponse.next({
@@ -57,7 +56,7 @@ export async function middleware(request: NextRequest) {
 
     return response;
   }
-  const setCookieHeader = refreshResponse.headers['set-cookie'];
+  const setCookieHeader = refreshHeaders.get('set-cookie');
   const parsedCookies = setCookieHeader ? parse(setCookieHeader) : ([] as any[]);
 
   for (const cookie of parsedCookies) {

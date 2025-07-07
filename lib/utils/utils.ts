@@ -1,4 +1,3 @@
-import axios from 'axios';
 import * as jose from 'jose';
 import { jwtVerify } from 'jose';
 
@@ -99,22 +98,6 @@ export const isTokenValid = async (token: string) => {
 };
 
 export const parseJwt = (token: string) => jose.decodeJwt(token);
-
-export const errorHandler = (error: any): string => {
-  if (axios.isAxiosError(error)) {
-    console.error('Axios error: ' + error.message);
-    console.error('Axios error(2): ' + error.response?.data.message);
-    if (error.response?.data.message) {
-      return error.response.data.message;
-    }
-  } else if (error instanceof Error) {
-    console.error(error.message);
-  } else {
-    console.error('Unexpected error: ', error.message);
-  }
-
-  return error.message;
-};
 
 export const clientErrorHandler = async (error: unknown) => {
   const base = {

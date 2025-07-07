@@ -6,9 +6,9 @@ import { IApiResponse, IProduct } from '@/types/types';
 export const FavoritesApi = {
   getAll: async (): Promise<IApiResponse<IProduct[]>> => {
     try {
-      const response = await apiFetch.get<IApiResponse<IProduct[]>>('/favorites/get');
+      const { body } = await apiFetch.get<IProduct[]>('/favorites/get');
 
-      return response;
+      return body;
     } catch (error) {
       return clientErrorHandler(error);
     }

@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import Spinner from '@/components/ui/spinner/Spinner';
 
 import { AUTH_FORM_TYPE } from '@/constants/constants';
-import { userRegistration } from '@/services/api/user';
+import { UserApi } from '@/services/api/user';
 import { IRegistrationBody, TypeForm } from '@/types/auth-types';
 
 interface Props {
@@ -31,7 +31,7 @@ const Registration: FC<Props> = ({ onClick }) => {
   const passwordValue = watch('password');
   const onSubmit = handleSubmit(async (data) => {
     setSpinner(true);
-    const { success, message } = await userRegistration(data);
+    const { success, message } = await UserApi.userRegistration(data);
     setSpinner(false);
     setResponse({ success, message });
     if (success) {

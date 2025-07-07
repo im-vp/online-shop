@@ -35,6 +35,12 @@ export interface IApiResponse<T = null, U = null> {
   error?: any;
 }
 
+export interface ExtendedApiResponse<T = null, U = null> {
+  body: IApiResponse<T, U>;
+  headers: Headers;
+  status: number;
+}
+
 export interface IProductResponse {
   products: IProduct[];
   productsQuantity: number;

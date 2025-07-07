@@ -6,20 +6,20 @@ import { IApiResponse, IReviews, IReviewsBody } from '@/types/types';
 export const ReviewsApi = {
   getProductReviews: async (id: string): Promise<IApiResponse<IReviews[]>> => {
     try {
-      const response = await apiFetch.get<IApiResponse<IReviews[]>>(`/reviews/get/${id}`);
+      const { body } = await apiFetch.get<IReviews[]>(`/reviews/get/${id}`);
 
-      return response;
+      return body;
     } catch (error) {
       return clientErrorHandler(error);
     }
   },
-  addReview: async (body: IReviewsBody): Promise<IApiResponse> => {
+  addReview: async (requestBody: IReviewsBody): Promise<IApiResponse> => {
     try {
-      const response = await apiFetch.post<IApiResponse>('/reviews/add', {
-        body,
+      const { body } = await apiFetch.post('/reviews/add', {
+        body: requestBody,
       });
 
-      return response;
+      return body;
     } catch (error) {
       return clientErrorHandler(error);
     }
