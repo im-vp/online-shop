@@ -1,25 +1,25 @@
 import { errorHandler } from '@/lib/utils/utils';
 
-import { axiosInstance } from '@/services/api/instance';
+import { apiFetch } from '@/services/api/instance';
 import { IApiResponse, IOrder, OrderCreateApi } from '@/types/types';
 
 export const OrdersApi = {
-  create: async (body: OrderCreateApi) => {
+  create: async (body: OrderCreateApi): Promise<IApiResponse<IOrder>> => {
     try {
-      const { data } = await axiosInstance.post<IApiResponse<IOrder>>('/order/create', {
-        ...body,
+      const response = await apiFetch.post<IApiResponse<IOrder>>('/order/create', {
+        body,
       });
 
-      return data;
+      return response;
     } catch (error) {
       return { success: false, data: null, message: errorHandler(error) };
     }
   },
-  getById: async (userId: string) => {
+  getById: async (userId: string): Promise<IApiResponse<IOrder[]>> => {
     try {
-      const { data } = await axiosInstance.get<IApiResponse<IOrder[]>>(`/order/get?id=${userId}`);
+      const response = await apiFetch.get<IApiResponse<IOrder[]>>(`/order/get?id=${userId}`);
 
-      return data;
+      return response;
     } catch (error) {
       return { success: false, data: null, message: errorHandler(error) };
     }

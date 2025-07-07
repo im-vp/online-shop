@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 import { connectMongoDB } from '@/lib/mongodb';
+import { serverErrorHandler } from '@/lib/utils/utils';
 
 import OrderModel from '@/models/orderModel';
 
@@ -13,7 +14,6 @@ export async function POST(req: NextRequest) {
     const { products, userId, guestName, guestEmail, phoneNumber, deliveryAddress, totalPrice } =
       body;
 
-    // Валидация
     if (!products || !Array.isArray(products) || products.length === 0) {
       return NextResponse.json({ error: 'Нет продуктов' }, { status: 400 });
     }
@@ -45,12 +45,6 @@ export async function POST(req: NextRequest) {
 
     return response;
   } catch (error: any) {
-    if (error.errorResponse) {
-      return NextResponse.json({ success: false, message: error.errorResponse.errmsg });
-    }
-    if (error.name === 'ValidationError') {
-      return NextResponse.json({ success: false, message: error.message });
-    }
-    return NextResponse.json({ error });
+    return NextResponse.json(serverErrorHandler(error));
   }
 }
